@@ -1,0 +1,9 @@
+
+This project aims at developing a platform to make it easier for researchers to share and access
+data, models and analysis tools in a way that preserves the integrity and traceability of the
+research process, while ensuring the privacy and security of the data.
+This is a continuation of the work done in the context of the NeuroInformatics platform (http://neuroinfor.com),
+and will make use of the NeuroInformatics API (http://neuroinfor.com/api/v2), which provides a RESTful
+interface to a growing collection of data, models and tools.
+More details here.
+Expected results: A set of classes , with demo Jupyter notebook, and unit tests in brief
