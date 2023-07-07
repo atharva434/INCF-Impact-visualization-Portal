@@ -4,8 +4,12 @@ from django.db import models
 
 class Organization(models.Model):
     name=models.CharField(max_length=100)
-    domain=models.CharField(max_length=50,blank=True, null=True)
-
+    aim=models.CharField(max_length=50,blank=True, null=True)
+    use=models.TextField(blank=True,null=True)
+    impact=models.TextField(blank=True,null=True)
+    url=models.URLField(blank=True,null=True)
+    def __str__(self):
+        return self.name
 
 
 class Project(models.Model):
