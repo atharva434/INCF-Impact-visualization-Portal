@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      background-image: linear-gradient(to bottom, #3498db, #2980b9);
+      background-repeat: no-repeat;
+      background-size: cover;
+    }
+
+    .container {
+      max-width: 500px;
+      background-color: #fff;
+      padding: 40px;
+      border-radius: 4px;
+      position: relative;
+      overflow: hidden;
+      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    }
+
+    header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    header img {
+      height: 40px;
+      width: auto;
+      margin-right: 10px;
+    }
+
+    h2 {
+      margin-top: 0;
+      color: #3498db;
+    }
+
+    form {
+      margin-top: 20px;
+    }
+
+    label {
+      display: block;
+      margin-top: 10px;
+      color: #2980b9;
+    }
+
+    input[type="text"],
+    input[type="url"] {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+      box-sizing: border-box;
+      
+    }
+
+    input[type="submit"] {
+      background-color: #2980b9;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+      width: 100%;
+    }
+
+    input[type="submit"]:hover {
+      background-color: #1a5276;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="INCf Logo">
+    </header>
+
+    <h2>Enter Organization Details</h2>
+
+    <form method="post" action="/org">
+      {% csrf_token %}  
+      <label for="name">Organization name:</label>
+      <input type="text" id="name" name="name">
+
+      <label for="url">URL:</label>
+      <input type="url" id="url" name="url">
+
+      <label for="domain">Domain:</label>
+      <input type="text" id="domain" name="domain"> <br><br>
+      <input type="submit" value="Submit">
+    </form>
+
+  </div>
+</body>
+</html>
