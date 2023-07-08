@@ -11,7 +11,6 @@ def organization(request):
     print("ji")
     org_name=request.POST["name"]
     url=request.POST["url"]
-    domain=request.POST["url"]
     impact_params,project_type=impact(url)
     if project_type=="disease":
         organization=Organization(name=org_name,url=url,impact=impact_params)
