@@ -6,6 +6,9 @@ from .models import Organization
 def home(request):
     return render(request,"home.html")
 
+def homepage(request):
+    organizations=Organization.objects.all()
+    return render(request,"newpage.html",{"organization":organizations})
 
 def organization(request):
     print("ji")
