@@ -9,6 +9,7 @@ class Organization(models.Model):
     aim=models.CharField(max_length=50,blank=True, null=True)
     use=models.TextField(blank=True,null=True)
     impact=models.TextField(blank=True,null=True)
+    impact_json=models.JSONField(blank=True,null=True)
     url=models.URLField(blank=True,null=True)
     def __str__(self):
         return self.name
