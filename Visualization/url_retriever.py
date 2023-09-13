@@ -6,6 +6,7 @@ import cohere
 from langchain.llms import Cohere
 import nltk
 import json
+from .serp import stats_finder
 llm = Cohere(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi",temperature=0)
 # import nltk
 # nltk.download('averaged_perceptron_tagger')
@@ -18,8 +19,9 @@ def diseases(tex):
     # print(nltk_tokens)
 
 def impact_count(disease):
-    prompt2=f"tell me number of people suffering from {disease} no need to give background information"
-    return llm(prompt2)
+    # prompt2=f"tell me number of people suffering from {disease} no need to give background information"
+    # return llm(prompt2)
+    return stats_finder(disease)
 
 def research_params(tex):
     prompt=f"""Give me a structured output in json format covering the aim,use of project, and the real world impact of this project and expand in detail on the impact {tex} 
@@ -43,10 +45,14 @@ def impact(url):
     
     if "no"not in list_diseases:
         disease_stats=""
+        l=[]
         for i in list_diseases:
-            stat=impact_count(i)
-            disease_stats=disease_stats+stat
-        return disease_stats,"disease"
+            
+            link,stat=impact_count(i)
+            d={"disease":i,"source":link,"impact":stat}
+            l.append(d)
+            # disease_stats=disease_stats+stat
+        return l,"disease"
     else:
         params=research_params(tex)
         return params,"research"

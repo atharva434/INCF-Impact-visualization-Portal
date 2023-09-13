@@ -12,7 +12,7 @@ llm = Cohere(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi",temperatu
 # import nltk
 # nltk.download('averaged_perceptron_tagger')
 urls = [
-    "https://neuroinformatics.incf.org/node/296"
+    "https://www.thevirtualbrain.org/tvb/zwei"
 ]
 
 loader = UnstructuredURLLoader(urls=urls) # try other loaders
@@ -26,8 +26,8 @@ def diseases(tex):
     
     prompt=f"write the mental disorders mentioned in {tex} if no mental disorders present say 'no disease found'"
     diseases=llm(prompt)
-    nltk_tokens = nltk.word_tokenize(diseases)
-    return nltk_tokens
+    # nltk_tokens = nltk.word_tokenize(diseases)
+    return diseases
     # print(nltk_tokens)
 def research_params(tex):
     prompt=f"""Give me a structured output in json format covering the aim,use of project, and the real world impact of this project and expand in detail on the impact {tex} 
@@ -37,19 +37,18 @@ def research_params(tex):
     print(params["impact"])
     return params
 def impact_count(disease):
-    prompt2=f"tell me number of people suffering from {disease} no need to give background information"
+    prompt2=f"In{disease} there is list of diseases Find the number of people suffering from each respective disease in millions and store it in json format with key as name of disease no need to give background information"
     return llm(prompt2)
 
 # prompt_check=f"write 'yes' if any mental disorder is detected in {tex} otherwise return 'no'"
 # print(llm(prompt_check))
 list_diseases=diseases(tex)
-# print(list_diseases)
+print(list_diseases)
 if "no"not in list_diseases:
-    for i in list_diseases:
-        print(impact_count(i))
+    print(impact_count(list_diseases))
 
-else:
-    print(research_params(tex))
+# else:
+#     print(research_params(tex))
 
     # print("sorry")
 
