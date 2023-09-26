@@ -1,0 +1,451 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
+<link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        .navbar {
+            display: flex;
+            justify-content: space-between;
+            padding: 10px;
+            position: fixed;
+            background: linear-gradient(to bottom right, #e710ea, #2b68e0); /* Use the same gradient as your previous code */
+            width: 100%;
+            z-index: 2;
+            align-items: center; /* Adjusted alignment to center vertically */
+        }
+
+        .navbar a {
+            padding: 8px 12px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+
+        .navbar a:hover {
+            background: linear-gradient(to bottom right, #e710ea, #2b68e0); /* Adjust hover background gradient */
+        }
+        /* Center the content horizontally and vertically */
+        .container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 75vh; /* Ensure full viewport height */
+        }
+
+        /* Create two equal columns that float next to each other */
+        .column {
+            float: left;
+            width: 40%;
+            padding: 10px;
+            height: 300px; /* Should be removed. Only for demonstration */
+        }
+
+        /* Clear floats after the columns */
+        .row:after {
+            content: "";
+            display: table;
+            clear: both;
+        }
+
+        /* Chat UI Styles */
+        .card-container {
+            height: 100%;
+            width: 600px;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Background pattern */
+        body {
+            background-color: #f0f0f0;
+            background-repeat: repeat; /* Set to 'no-repeat' if using a single image */
+            background-size: auto; /* Adjust as needed */
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        /* Center the container horizontally on the page */
+        .card {
+            width: 750px;
+            background-color: #fff; /* Background color for the card */
+            border-radius: 10px; /* Rounded corners for the card */
+            box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
+            padding: 20px; /* Add padding to the card */
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            height: 500px; /* Fill the entire column height */
+        }
+
+        /* Style the card title */
+        .card-title {
+            background-color: #007BFF; /* Background color for the title */
+            color: #fff; /* Text color for the title */
+            padding: 10px; /* Add padding to the title */
+            margin: 0; /* Remove any default margin */
+            border-radius: 10px 10px 0 0; /* Rounded corners for the top of the card */
+        }
+
+        /* Style the chat container within the card */
+        .chat-container {
+            background-color: #f0f0f0; /* Background color for the chat container */
+            border-radius: 10px; /* Rounded corners for the chat container */
+             /* Add padding to the chat container */
+            flex-grow: 1; /* Allow the chat container to grow and take available space */
+            max-height: 500px; /* Set a maximum height for the chat container if needed */
+            overflow-y: auto; /* Add vertical scroll if the content overflows */
+        }
+
+        /* Style the chat input and send button within the card */
+        .chat-input {
+            display: flex;
+            position: sticky;
+            align-items: center;
+            margin-top: 20px; /* Add space between chat content and input */
+            bottom: 0; /* Stick it to the bottom */
+            background-color: #fff; /* Background color for the input bar */
+            padding: 10px 20px; /* Add padding to the input bar */
+            z-index: 1; /* Ensure it's above the chat messages */
+        }
+
+        .combined-input {
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+
+        #user-input {
+            flex-grow: 1;
+            border: none;
+            padding: 5px;
+        }
+
+        #send-button {
+            background-color: #25D366;
+            color: #fff;
+            border: none;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            margin-left: 10px;
+            height: 30px;
+            /* Initially, disable the button */
+            pointer-events: none;
+            opacity: 0.6;
+        }
+        .file-input{
+
+        }
+
+        /* Style for chat messages */
+        .message-container {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            margin: 5px;
+        }
+
+        .user-message {
+            background-color: #075e54; /* Green color for user messages */
+            color: #fff; /* White text color for user messages */
+            text-align: right;
+            border-radius: 20px; /* Rounded corners for the message box */
+            padding: 10px; /* Add padding to the message box */
+            margin-left: auto;
+            max-width: 70%;
+        }
+
+        .bot-message {
+            background-color: #333333; /* Gray color for bot messages */
+            color: #fff; /* White text color for bot messages */
+            text-align: left;
+            border-radius: 20px; /* Rounded corners for the message box */
+            padding: 10px; /* Add padding to the message box */
+            margin-right: auto;
+            max-width: 70%;
+        }
+        .box1 {
+            width: 620px;
+            border-radius: 10px;
+            margin: 20px auto;
+            background: #686767;
+            padding: 20px;
+            text-align: center;
+            font-weight: 900;
+            color: #fff;
+            font-family: arial;
+            position: relative;
+            text-overflow: ellipsis
+            
+          }
+          .box2 {
+            width: 620px;
+            border-radius: 10px;
+            margin: 20px auto;
+            background: #f9c764;
+            padding: 20px;
+            text-align: center;
+            font-weight: 900;
+            color: #fff;
+            font-family: arial;
+            position: relative;
+            text-overflow: ellipsis;
+            
+          }
+          .sb1:before {
+            content: "";
+            width: 0px;
+            height: 0px;
+            position: absolute;
+            border-left: 10px solid #686767;
+            border-right: 10px solid transparent;
+            border-top: 10px solid #686767;
+            border-bottom: 10px solid transparent;
+            right: -19px;
+            top: 6px;
+            text-overflow: ellipsis
+          }
+          .sb2:before {
+            content: "";
+            width: 0px;
+            height: 0px;
+            position: absolute;
+            border-left: 10px solid transparent;
+            border-right: 10px solid #f9c764;
+            border-top: 10px solid #f9c764;
+            border-bottom: 10px solid transparent;
+            left: -19px;
+            top: 6px;
+            text-overflow: ellipsis
+          }
+          input[type="file"] {
+            background-color: #f7f7f7;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            cursor: pointer;
+            padding: 10px;
+            width: 200px;
+            margin-bottom: 10px;
+          }
+          
+          label[for="file-input"] {
+            display: inline-block;
+            padding: 6px 12px;
+            font-size: 14px;
+            color: #555;
+            cursor: pointer;
+          }
+          label {
+            display: block;
+            position: relative;
+            background-color: #21a16c;
+            color: #ffffff;
+            font-size: 18px;
+            text-align: center;
+            width: 300px;
+            padding: 18px 0;
+            margin: auto;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        input[type="file"] {
+            display: inside;
+        }
+          
+          label[for="file-input"]:hover {
+            color: #000;
+          }
+          
+          input[type="file"]:focus {
+            outline: none;
+          }
+          .dropdown {
+    position: relative;
+    display: inline-block;
+}
+
+/* Style for the button */
+.custom-button {
+    background: linear-gradient(to bottom right, #e710ea, #2b68e0);
+    border: 2px solid #5356e3;
+    font-weight: bold;
+    padding: 5px 20px;
+    border-radius: 50px;
+    color: transparent; /* Set text color to transparent */
+    -webkit-background-clip: text; /* Use background as text fill */
+    cursor: pointer;
+    position: relative;
+}
+/* Style the dropdown overlay */
+.dropdown-overlay {
+  position: relative;
+  z-index: 1; /* Place the dropdown above the slideshow */
+}
+
+/* Style for the dropdown content */
+.dropdown-content {
+    opacity: 0;
+    transform: translateY(-10px);
+    visibility: hidden;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    width: 160px;
+    background-color: #f9f9f9;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease-in-out;
+}
+
+/* Style for dropdown links */
+.dropdown-content a {
+    display: block;
+    padding: 10px;
+    text-decoration: none;
+    color: #333;
+    transition: background-color 0.3s ease-in-out;
+}
+
+/* Change color of links on hover */
+.dropdown-content a:hover {
+    background-color: #ddd;
+}
+
+/* Show the dropdown content on button hover */
+.dropdown:hover .dropdown-content {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+}
+
+/* Change button styles on hover */
+.dropdown:hover .custom-button {
+    background: linear-gradient(to bottom right, #e710ea, #2b68e0);
+    border: 2px solid #5356e3;
+    font-weight: bold;
+    padding: 5px 20px;
+    border-radius: 50px;
+    color: white; /* Set text color to white on hover */
+}
+.gradient {
+    background: linear-gradient(to bottom right, #e710ea, #2b68e0);
+    font-weight: bold;
+    font-size: 30px;
+    color: transparent; /* Set text color to transparent */
+    -webkit-background-clip: text; /* Use background as text fill */
+    transition: background 0.3s; /* Smooth gradient transition on hover */
+}
+
+</style>
+</head>
+<body>
+    <header class=" relative shadow-lg px-3 py-2">
+        <nav class="flex justify-between">
+          <div class="w-[130px] md:w-[200px] flex items-center">
+            <a href="{% url "home" %} "><h2 class="gradient">GovtLegalAssistant</h2></a>
+      
+          </div>
+          <div class="flex items-center gap-3" style="padding-right: 80px">
+            <div class="navLinks duration-500 absolute md:static md:w-auto w-full md:h-auto h-[85vh] bg-white flex md:items-center gap-[1.5vw] top-[100%] left-[100%] px-5 md:py-0 py-5 ">
+              <ul class="flex md:flex-row flex-col md:items-center md:gap-[2vw] gap-8">
+                {%if request.user.is_authenticated%}      
+              </ul>
+            </div>
+            
+            <a href="/logout"><button class="custom-button">Log Out</button></a>
+            {% else %}
+              <div class="dropdown-overlay">
+         <div class="dropdown">
+          <button class="custom-button">Login</button>
+          <div class="dropdown-content">
+              <a href="/user_login">As a Client</a>
+              <a href="/user_login">As a Lawyer</a>
+      
+          </div>
+          
+          </div>
+                  </div>
+              <div class="dropdown-overlay">
+                 <div class="dropdown">
+          <button class="custom-button">Sign up</button>
+          <div class="dropdown-content">
+              <a href="/client_registration">As a Client</a>
+              <a href="/lawyer_registration">As a Lawyer</a>
+      
+          </div>
+          </div>
+          {% endif %}
+              </div>
+      </div>
+        </nav>
+      </header>
+<div class="container"> <!-- Added a container to center the content -->
+    <div class="row">
+        <div class="column">
+            <center><img src="https://cdn-icons-png.flaticon.com/128/2728/2728212.png" alt="bot" style="height:70%"></center>
+            <center><h2>Hello! Welcome to our INCF Assistant! </h2>
+            <p>We're here to help you explore INCF's neuroscience projects and suborganizations. Ask us anything about ongoing research, collaborators, and more. Let's dive into the world of neuroinformatics together!</p>
+        </center>
+        </div>
+        <div class="column">
+            <!-- Chat UI Goes Here -->
+            <div class="card-container">
+                <div class="card">
+                    <div class="card-title">ChatBot</div>
+                    <div class="chat-container">
+                        <div class="chat-content" id="chat-content">
+                            <!-- Chat messages will be displayed here -->
+                        </div>
+                         <!-- <div class="chat-input">
+                            <div class="combined-input">
+                                <input type="text" id="user-input" placeholder="Type your message...">
+                                <button id="send-button" disabled>&#62;</button> <!-- Use ">" symbol as the button 
+                            </div>
+                        </div>  -->
+
+                        <form action="/chatbot" method="post">
+                            {% for key,value in responses.items %}
+                            <!-- <div class="user">
+                              <h3>user:{{key}}</h3>
+                              
+                            </div> -->
+                            <div class="box1 sb1">User:&nbsp;{{key}}</div>
+                            <div class="box2 sb2">Chatbot:&nbsp;{{value.answer}}&nbsp;<br><br> Content cited from Link = <a href="{{value.source}}" target="_blank">{{value.source}}</a> </div> 
+                            <!-- <h3>chabot:{{value}}</h3> -->
+                    
+                            {% endfor %}
+                            {% csrf_token %}
+                            <div class="chat-input">
+                                <div class="combined-input">
+                            <!-- <label for="msg"><b>Message</b></label> -->
+                            <input type="text" id="user-input" name="query" placeholder="Ask your INCF related query here">
+                            <!-- <textarea placeholder="Type message.." name="inp" required></textarea> -->
+                    
+                            <button type="submit" class="btn">&#62;</button>
+                        </div>
+                    </div>
+                            <!-- <button id="send-button" disabled></button> -->
+                          </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

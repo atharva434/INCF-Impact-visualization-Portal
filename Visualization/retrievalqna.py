@@ -24,6 +24,7 @@ def ingest(urls):
     vectordb = Chroma.from_documents(documents, embeddings, persist_directory=persist_directory)
     vectordb.persist()
     vectordb = None
+    return True
 
 # ingest(["https://en.wikipedia.org/wiki/Shah_Rukh_Khan","https://en.wikipedia.org/wiki/Jawan_(film)"])
 
@@ -44,5 +45,6 @@ def chat(query):
                                                 memory=memory)
     result = qa2({"question": query})
     print(result["answer"])
+    return result
 
-chat("what does openworm do")
+
