@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>{{organization.name}}</title>
+    <style>
+        .navbar {
+            display: flex;
+            top: 0;
+            justify-content: space-between;
+            padding: 10px;
+            position: fixed;
+            background-color: #2980b9; /* Set the background color of the navbar */
+            width: 100%;
+            margin-bottom: 20px; /* Ensure the navbar spans the whole width */
+            z-index: 2;
+            align-items: flex-start;
+        }
+        
+        .navbar a {
+            padding: 8px 12px;
+            color: #fff;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s;
+        }
+        
+        .navbar a:hover {
+            background-color: #1a5276;
+        }
+        .navbar .right-links {
+            display: flex;
+            align-items: center;
+        }
+        .navbar img {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+            flex-shrink: 0; /* Prevent the image from shrinking */
+        }
+        .card-grid {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            margin-top: 20px;
+        }
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            background-image: linear-gradient(to bottom, #3498db, #2980b9);
+            background-repeat: no-repeat;
+            background-size: cover;
+        }
+
+        .container {
+            max-width: 900px;
+            background-color: #fff;
+            padding: 30px;
+            border-radius: 4px;
+            margin: 0 auto;
+            margin-top: 80px;
+            position: relative;
+            z-index: 1;
+            overflow: visible;
+            box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        header img {
+            height: 40px;
+            width: auto;
+            margin-right: 10px;
+        }
+
+        h2 {
+            margin-top: 0;
+            color: #3498db;
+        }
+
+        .filter-dropdown {
+            margin-top: 20px;
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 16px;
+            background-color: #f8f8f8;
+        }
+
+        .carousel {
+            margin-top: 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        .carousel img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 4px;
+        }
+
+        .card-grid {
+            display: flex;
+            z-index: 2;
+            flex-wrap: wrap;
+            justify-content: center; /* Adjusted justify-content value */
+            align-items: flex-start;
+            margin-top: 20px;
+        }
+
+        .card {
+            flex: 1 1 300px; /* Adjusted flex property */
+            max-width: 300px;
+        
+            width: 300px;
+            height: 300px;
+            margin: 10px;
+            padding: 20px;
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            text-align: left;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .card-content {
+            margin-bottom: 10px;
+        }
+
+        .card h3 {
+            margin-top: 0;
+            color: #2980b9;
+            font-size: 20px;
+        }
+
+        .card p {
+            margin: 0;
+            color: #555;
+        }
+
+        .expand-button {
+            text-align: center;
+            color: #fff;
+            background-color: #2980b9;
+            border: none;
+            padding: 10px;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        .expand-button:hover {
+            background-color: #1a5276;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgba(0, 0, 0, 0.8);
+        }
+
+        .modal-content {
+            background-color: #f0f0f0;
+            border-radius: 5px;
+            margin: 10% auto;
+            padding: 20px;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close-button {
+            color: #888;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close-button:hover,
+        .close-button:focus {
+            color: #000;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .expanded-content {
+            margin-top: 10px;
+        }
+        /* Add styles for the "Add Project" button */
+        /* Add styles for the "Add Project" button */
+        .add-project {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .add-project-button {
+            background-color: #3498db; /* Button background color */
+            color: #fff; /* Text color */
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 18px;
+            transition: background-color 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .add-project-button img {
+            width: 30px; /* Increase the icon size */
+            height: 30px; /* Increase the icon size */
+            margin-right: 10px; /* Spacing between the icon and text */
+        }
+        
+        .add-project-button span {
+            font-size: 18px; /* Text size */
+        }
+        
+        .add-project-button:hover {
+            background-color: #1a5276; /* Hover background color */
+        }
+        .add-project-link {
+            text-decoration: none; /* Remove underline on the link */
+            {% comment %} display: inline-block; /* Make the link a block-level element for styling */ {% endcomment %}
+            margin-bottom: 20px;
+        }
+        
+
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <img src="https://o.remove.bg/downloads/aba61177-c2ef-4aaa-a108-ac5dfda155a8/image-removebg-preview.png" alt="Logo">
+        <div class="right-links">
+            <a href="#">Login</a>
+            <a href="#">Register</a>
+        </div>
+    </div>
+    <div class="container">
+        <header>
+            <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="INCf Logo">
+        </header>
+
+        <h2>{{organization.name}}</h2>
+        {% if request.user.is_superuser %}
+        <div class="add-project">
+            <a href="/add/{{organization.id}}" class="add-project-link" >
+            <button class="add-project-button">
+                <img src="https://cdn-icons-png.flaticon.com/512/6711/6711415.png" alt="Add Project Icon">
+                Add Project
+            </button>
+        </a>
+        </div>
+        {% endif %}
+        <select class="filter-dropdown">
+            <option value="all">All</option>
+            {% for i in projects %}
+            <option value="{{ i.title }}">{{ i.title }}</option>
+            {% endfor %}
+        </select>
+
+
+
+        <div class="card-grid">
+            {% for content in projects %}
+            <div class="card {{ content.name }}">
+                <div class="card-content">
+                    <h3>{{ content.title }}</h3>
+                    <div class="additional-content" style="display: none;">{{ content.description }}</div>
+                </div>
+                <a href="#" class="expand-button">Show Impact</a>
+                {% comment %} <a href="/detail/{{content.id}}" class="expand-button">Show Impact</a> {% endcomment %}
+                <div class="modal">
+                    <div class="modal-content">
+                        <span class="close-button">&times;</span>
+                        <div class="expanded-content"></div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+
+    <script>
+        const filterDropdown = document.querySelector('.filter-dropdown');
+        const cards = document.querySelectorAll('.card');
+        const modals = document.querySelectorAll('.modal');
+        const closeButtons = document.querySelectorAll('.close-button');
+
+        filterDropdown.addEventListener('change', () => {
+            const selectedValue = filterDropdown.value;
+            
+            console.log('Selected Value:', selectedValue);
+        
+            cards.forEach((card) => {
+                const cardClassNames = card.className.split(' '); // Split class names into an array
+                console.log('Card Class Names:', cardClassNames);
+                
+                if (selectedValue === 'all' || cardClassNames.includes(selectedValue)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+        
+
+        const expandButtons = document.querySelectorAll('.expand-button');
+
+        expandButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const expandedContent = modals[index].querySelector('.expanded-content');
+                const cardContent = cards[index].querySelector('.card-content').innerHTML;
+                const additionalContent = cards[index].querySelector('.additional-content').innerHTML;
+                expandedContent.innerHTML = cardContent + additionalContent;
+                modals[index].style.display = 'block';
+            });
+        });
+
+        closeButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                modals[index].style.display = 'none';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -215,6 +215,7 @@
         <div class="right-links">
             <a href="#">Login</a>
             <a href="#">Register</a>
+            <a href="/chatbot">Chatbot</a>
         </div>
     </div>
     <div class="container">
@@ -240,7 +241,8 @@
                     <h3>{{ content.name }}</h3>
                     <div class="additional-content" style="display: none;">{{ content.impact }}</div>
                 </div>
-                <a href="#" class="expand-button">Show Impact</a>
+                {% comment %} <a href="#" class="expand-button">Show Impact</a> {% endcomment %}
+                <a href="/detail/{{content.id}}" class="expand-button">Show Impact</a>
                 <div class="modal">
                     <div class="modal-content">
                         <span class="close-button">&times;</span>

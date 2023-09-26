@@ -7,6 +7,7 @@ from langchain.llms import Cohere
 import nltk
 import json
 from .serp import stats_finder
+from langchain.text_splitter import CharacterTextSplitter
 llm = Cohere(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi",temperature=0)
 # import nltk
 # nltk.download('averaged_perceptron_tagger')
@@ -56,4 +57,45 @@ def impact(url):
     else:
         params=research_params(tex)
         return params,"research"
+
+def ingest(urls):
+    loader = UnstructuredURLLoader(urls=urls) #need to change
+    # Split pages from pdf
+    pages = loader.load()
+
+    #  to store it in a folder name titan
+    persist_directory = 'test'
+    text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
+    documents = text_splitter.split_documents(pages)
+    embeddings = CohereEmbeddings(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi")
+    vectordb = Chroma.from_documents(documents, embeddings, persist_directory=persist_directory)
+    vectordb.persist()
+    vectordb = None
+    return True
+
+
+def calculator(impact):
+    s=" ".join(impact)
+    prompt="""Identify the mental disorders mentioned in""" + s+"""and tell me all the unique diseases along with their count in 
+     in the dictionary format
+    {disease:count}
+    if no mental disorders present say 'no disease found'
+    """
+    diseases=llm(prompt)
+    print(diseases)
+    return diseases
+
+def project_details(title,url):
+    urls=[url]
+    loader = UnstructuredURLLoader(urls=urls)
+    docs = loader.load()
+    tex=str(docs[0])
+    prompt=f"""Give me a structured output in json format covering the description,the tech stack, the domain,the subdomain
+using {tex} for information"""
+    params=llm(prompt)
+    params=json.loads(params)
+    return params
+
+
+
         
