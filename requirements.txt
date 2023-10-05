@@ -2,4 +2,7 @@ langchain
 cohere
 unstructured
 chromadb
-
+mathfilters
+google-search-results
+nltk
+pydantic

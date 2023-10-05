@@ -21,6 +21,8 @@ class Project(models.Model):
     domain=models.CharField(max_length=50,blank=True, null=True)
     subdomain=models.CharField(max_length=50,blank=True, null=True)
     # phone=models.IntegerField(max_length=10)
-    impact=models.TextField(blank=True, null=True)
+    # impact=models.TextField(blank=True, null=True)
+    def __str__(self):
+        return self.title
 
 

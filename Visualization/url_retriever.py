@@ -25,9 +25,10 @@ def impact_count(disease):
     return stats_finder(disease)
 
 def research_params(tex):
-    prompt=f"""Give me a structured output in json format covering the aim,use of project, and the real world impact of this project and expand in detail on the impact {tex} 
- the project description is {tex}"""
+    prompt=f"""Extract the aim,use of project, and the real world impact of this project and expand in detail on the impact {tex} 
+ the project description is {tex} give in json format with keys (aim use and impact)"""
     params=llm(prompt)
+    print(params)
     params=json.loads(params)
     print(params["impact"])
     return params
@@ -77,12 +78,13 @@ def ingest(urls):
 def calculator(impact):
     s=" ".join(impact)
     prompt="""Identify the mental disorders mentioned in""" + s+"""and tell me all the unique diseases along with their count in 
-     in the dictionary format
-    {disease:count}
+     in the dictionary format with key and value as string
+    {"disease":"count"}
     if no mental disorders present say 'no disease found'
     """
     diseases=llm(prompt)
     print(diseases)
+    diseases=json.loads(diseases)
     return diseases
 
 def project_details(title,url):
@@ -96,6 +98,10 @@ using {tex} for information"""
     params=json.loads(params)
     return params
 
+def clean_with_llm(impact,org):
+    prompt=f"Convert {impact} into a proper impactful and concise paragraph without losing any piece of information present in text and add a line that {org} specifically is helping those people who suffer"
+    params=llm(prompt)
+    return params
 
 
         

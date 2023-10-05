@@ -3,40 +3,39 @@
 <head>
     <title>{{organization.name}}</title>
     <style>
-        .navbar {
-            display: flex;
-            top: 0;
-            justify-content: space-between;
-            padding: 10px;
-            position: fixed;
-            background-color: #2980b9; /* Set the background color of the navbar */
-            width: 100%;
-            margin-bottom: 20px; /* Ensure the navbar spans the whole width */
-            z-index: 2;
-            align-items: flex-start;
-        }
-        
-        .navbar a {
-            padding: 8px 12px;
-            color: #fff;
-            text-decoration: none;
-            border-radius: 4px;
-            transition: background-color 0.3s;
-        }
-        
-        .navbar a:hover {
-            background-color: #1a5276;
-        }
-        .navbar .right-links {
-            display: flex;
-            align-items: center;
-        }
-        .navbar img {
-            height: 40px;
-            width: auto;
-            margin-right: 10px;
-            flex-shrink: 0; /* Prevent the image from shrinking */
-        }
+        /* Navigation Bar */
+    nav {
+        background-color: #336699;
+        color: #ffffff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+    }
+    
+    .logo img {
+        max-height: 50px;
+    }
+    
+    .nav-links {
+        list-style-type: none;
+    }
+    
+    .nav-links li {
+        display: inline;
+        margin-right: 20px;
+    }
+    
+    .nav-links a {
+        text-decoration: none;
+        color: #ffffff;
+        font-weight: bold;
+        transition: color 0.3s;
+    }
+    
+    .nav-links a:hover {
+        color: #ff9900;
+    }
         .card-grid {
             display: flex;
             flex-wrap: wrap;
@@ -47,7 +46,7 @@
             box-sizing: border-box;
         }
 
-        body {
+        /* body {
             font-family: Arial, sans-serif;
             margin: 0;
             padding: 0;
@@ -59,7 +58,7 @@
             background-image: linear-gradient(to bottom, #3498db, #2980b9);
             background-repeat: no-repeat;
             background-size: cover;
-        }
+        } */
 
         .container {
             max-width: 900px;
@@ -251,19 +250,23 @@
     </style>
 </head>
 <body>
-    <div class="navbar">
-        <img src="https://o.remove.bg/downloads/aba61177-c2ef-4aaa-a108-ac5dfda155a8/image-removebg-preview.png" alt="Logo">
-        <div class="right-links">
-            <a href="#">Login</a>
-            <a href="#">Register</a>
-        </div>
-    </div>
+        <nav>
+            <div class="logo">
+                <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo" style="background-image: none;">
+            </div>
+            <ul class="nav-links">
+                <li><a href="#">About Us</a></li>
+                <li><a href="#">Admin</a></li>
+                <li><a href="#">Chatbot</a></li>
+            </ul>
+        </nav>
     <div class="container">
         <header>
             <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="INCf Logo">
         </header>
 
         <h2>{{organization.name}}</h2>
+        <h3>{{impact}}</h3>
         {% if request.user.is_superuser %}
         <div class="add-project">
             <a href="/add/{{organization.id}}" class="add-project-link" >
@@ -285,7 +288,7 @@
 
         <div class="card-grid">
             {% for content in projects %}
-            <div class="card {{ content.name }}">
+            <div class=" card {{ content.title }}">
                 <div class="card-content">
                     <h3>{{ content.title }}</h3>
                     <div class="additional-content" style="display: none;">{{ content.description }}</div>
@@ -304,7 +307,7 @@
     </div>
 
     <script>
-        const filterDropdown = document.querySelector('.filter-dropdown');
+        /* const filterDropdown = document.querySelector('.filter-dropdown');
         const cards = document.querySelectorAll('.card');
         const modals = document.querySelectorAll('.modal');
         const closeButtons = document.querySelectorAll('.close-button');
@@ -343,7 +346,48 @@
             button.addEventListener('click', () => {
                 modals[index].style.display = 'none';
             });
+        }); */
+        const filterDropdown = document.querySelector('.filter-dropdown');
+        const cards = document.querySelectorAll('.card');
+        const modals = document.querySelectorAll('.modal');
+        const closeButtons = document.querySelectorAll('.close-button');
+
+        filterDropdown.addEventListener('change', () => {
+            const selectedValue = filterDropdown.value.replace(/\s+/g, '-');;
+
+            console.log('Selected Value:', selectedValue);
+
+            cards.forEach((card) => {
+                const cardClassList = card.className.replace(/\s+/g, '-');;
+                //cardClassList.remove(cardClassList[0]);
+                console.log('Card Class List:', cardClassList);
+                
+                if (selectedValue === 'all' || cardClassList.includes(selectedValue)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
         });
+
+        const expandButtons = document.querySelectorAll('.expand-button');
+
+        expandButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const expandedContent = modals[index].querySelector('.expanded-content');
+                const cardContent = cards[index].querySelector('.card-content').innerHTML;
+                const additionalContent = cards[index].querySelector('.additional-content').innerHTML;
+                expandedContent.innerHTML = cardContent + additionalContent;
+                modals[index].style.display = 'block';
+            });
+        });
+
+        closeButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                modals[index].style.display = 'none';
+            });
+        });
+
     </script>
 </body>
 </html>

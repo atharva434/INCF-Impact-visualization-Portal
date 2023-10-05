@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    <div class="file-input-container">
+        <div class="cards">
+            <form method="post" enctype="multipart/form-data" action="get_qa_model">
+               {% csrf_token %}
+                <input type="file" id="file-input" name="filePath">
+                <br>
+                <input type="submit" class="fas fa-upload" value="Submit" style="background-color: white; color: black;border: #21a16c; text-align: center;">
+            </form>
+        </div>
+    </div>
+</body>
+</html>
