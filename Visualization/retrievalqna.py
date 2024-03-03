@@ -9,7 +9,7 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain import PromptTemplate
 import json
-from pydantic import BaseModel, Field, validator
+from langchain_core.pydantic_v1 import BaseModel, Field, validator
 
 from langchain.output_parsers import PydanticOutputParser
 

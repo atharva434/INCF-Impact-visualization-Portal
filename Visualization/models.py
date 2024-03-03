@@ -1,8 +1,6 @@
 from django.db import models
 
 # Create your models here.
-<<<<<<< HEAD
-=======
 
 class Organization(models.Model):
     name=models.CharField(max_length=100)
@@ -28,4 +26,3 @@ class Project(models.Model):
         return self.title
 
 
->>>>>>> 40b07e6c778106b005842f3c7be6dee0b9c34be1
