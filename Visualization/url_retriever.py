@@ -28,8 +28,9 @@ def research_params(tex):
     prompt=f"""Extract the aim,use of project, and the real world impact of this project and expand in detail on the impact {tex} 
  the project description is {tex} give in json format with keys (aim use and impact)"""
     params=llm(prompt)
-    print(params)
-    params=json.loads(params)
+    start_index = params.find('{')
+    json_string = params[start_index:].split('```', 1)[0].strip()
+    params=json.loads(json_string)
     print(params["impact"])
     return params
     
@@ -83,8 +84,9 @@ def calculator(impact):
     if no mental disorders present say 'no disease found'
     """
     diseases=llm(prompt)
-    print(diseases)
-    diseases=json.loads(diseases)
+    start_index = diseases.find('{')
+    json_string = diseases[start_index:].split('```', 1)[0].strip()
+    diseases = json.loads(json_string)
     return diseases
 
 def project_details(title,url):
@@ -95,7 +97,9 @@ def project_details(title,url):
     prompt=f"""Give me a structured output in json format covering the description,the tech stack, the domain,the subdomain
 using {tex} for information"""
     params=llm(prompt)
-    params=json.loads(params)
+    start_index = params.find('{')
+    json_string = params[start_index:].split('```', 1)[0].strip()
+    params=json.loads(json_string)
     return params
 
 def clean_with_llm(impact,org):
