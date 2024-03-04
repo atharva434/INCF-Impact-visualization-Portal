@@ -6,3 +6,4 @@ mathfilters
 google-search-results
 nltk
 pydantic
+python-dotenv

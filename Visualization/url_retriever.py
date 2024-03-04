@@ -8,7 +8,12 @@ import nltk
 import json
 from .serp import stats_finder
 from langchain.text_splitter import CharacterTextSplitter
-llm = Cohere(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi",temperature=0)
+import os
+
+COHERE_API_KEY = os.getenv('COHERE_API_KEY')
+
+llm = Cohere(cohere_api_key=COHERE_API_KEY,temperature=0)
+
 # import nltk
 # nltk.download('averaged_perceptron_tagger')
 
@@ -69,7 +74,7 @@ def ingest(urls):
     persist_directory = 'test'
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     documents = text_splitter.split_documents(pages)
-    embeddings = CohereEmbeddings(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi")
+    embeddings = CohereEmbeddings(cohere_api_key=COHERE_API_KEY)
     vectordb = Chroma.from_documents(documents, embeddings, persist_directory=persist_directory)
     vectordb.persist()
     vectordb = None

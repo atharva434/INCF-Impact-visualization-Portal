@@ -9,11 +9,14 @@ from langchain.memory import ConversationBufferMemory
 from langchain.chains import ConversationalRetrievalChain
 from langchain import PromptTemplate
 import json
+import os
 from langchain_core.pydantic_v1 import BaseModel, Field, validator
 
 from langchain.output_parsers import PydanticOutputParser
 
-llm = Cohere(temperature=0,cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi")
+COHERE_API_KEY = os.getenv('COHERE_API_KEY')
+
+llm = Cohere(temperature=0,cohere_api_key=COHERE_API_KEY)
 class Actor(BaseModel):
 #     name: str = Field(description="name of an actor")
 #     film_names: List[str] = Field(description="list of names of films they starred in")
@@ -41,7 +44,7 @@ def ingest(urls):
     persist_directory = 'test'
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     documents = text_splitter.split_documents(pages)
-    embeddings = CohereEmbeddings(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi")
+    embeddings = CohereEmbeddings(cohere_api_key=COHERE_API_KEY)
     vectordb = Chroma.from_documents(documents, embeddings, persist_directory=persist_directory)
     vectordb.persist()
     vectordb = None
@@ -58,10 +61,10 @@ def chat(query):
     persist_directory = 'test'
 
     # vectorstore = Chroma.from_documents(documents, embeddings)
-    embeddings = CohereEmbeddings(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi")
+    embeddings = CohereEmbeddings(cohere_api_key=COHERE_API_KEY)
     vectorstore = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
     memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key='answer')
-    qa2 = ConversationalRetrievalChain.from_llm(Cohere(temperature=0,cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi"), vectorstore.as_retriever(),return_source_documents=True,
+    qa2 = ConversationalRetrievalChain.from_llm(Cohere(temperature=0,cohere_api_key=COHERE_API_KEY), vectorstore.as_retriever(),return_source_documents=True,
                                                 memory=memory)
     result = qa2({"question": query})
     print(result["answer"])
@@ -76,7 +79,7 @@ def ingest_documents(file_path):
     persist_directory = 'test_document'
     text_splitter = CharacterTextSplitter(chunk_size=1000, chunk_overlap=0)
     documents = text_splitter.split_documents(pages)
-    embeddings = CohereEmbeddings(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi")
+    embeddings = CohereEmbeddings(cohere_api_key=COHERE_API_KEY)
     vectordb = Chroma.from_documents(documents, embeddings, persist_directory=persist_directory)
     vectordb.persist()
     vectordb = None
@@ -84,10 +87,10 @@ def ingest_documents(file_path):
 
 def fill_db(org_name):
     persist_directory = 'test_document'
-    embeddings = CohereEmbeddings(cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi")
+    embeddings = CohereEmbeddings(cohere_api_key=COHERE_API_KEY)
     vectorstore = Chroma(persist_directory=persist_directory, embedding_function=embeddings)
     # memory = ConversationBufferMemory(memory_key="chat_history", return_messages=True, output_key='answer')
-    # qa2 = ConversationalRetrievalChain.from_llm(Cohere(temperature=0,cohere_api_key="4aJ9yWbIrOzI2W5LZeLeIdin2AYMpkq18PffLuvi"), vectorstore.as_retriever(),return_source_documents=True,
+    # qa2 = ConversationalRetrievalChain.from_llm(Cohere(temperature=0,cohere_api_key=COHERE_API_KEY), vectorstore.as_retriever(),return_source_documents=True,
     #                                             memory=memory)
     retriever = vectorstore.as_retriever()
 

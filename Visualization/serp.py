@@ -1,4 +1,5 @@
 from serpapi import GoogleSearch
+import os
 
 def search(params):
     search = GoogleSearch(params)
@@ -15,10 +16,11 @@ def search(params):
     return None
 
 def stats_finder(disease):
+    COHERE_API_KEY = os.getenv('COHERE_API_KEY')
     params = {
     "engine": "google",
     "q": f"no of people suffering from {disease} in the world",
-    "api_key": "4192c4adf2893f3987b111e7779bc9fdf6fea8fcca47a502739bfe844aed2583"
+    "api_key": COHERE_API_KEY
     }
     return search(params)
 
