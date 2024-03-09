@@ -15,7 +15,7 @@
         }
         .navbar {
             position: relative;
-            width: 97%;
+            width: 95%;
             padding: 10px;
             display: flex;
             justify-content: space-between;
@@ -36,9 +36,9 @@
         /* Center the content horizontally and vertically */
         .container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 75vh; /* Ensure full viewport height */
+            width: 80%;  /* Set container width to 80% */
+            margin: 30px auto;  /* Center the container horizontally */
+            padding: 20px;  /* Add some padding for better spacing */
         }
 
         /* Create two equal columns that float next to each other */
@@ -59,7 +59,7 @@
         /* Chat UI Styles */
         .card-container {
             height: 100%;
-            width: 600px;
+            width: 100%;
             display: flex;
             flex-direction: column;
             justify-content: space-between;
@@ -76,7 +76,7 @@
 
         /* Center the container horizontally on the page */
         .card {
-            width: 650px;
+            width: 100%;
             background-color: #fff; /* Background color for the card */
             border-radius: 10px; /* Rounded corners for the card */
             box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2); /* Add a subtle box shadow */
@@ -356,7 +356,7 @@
     <header class="relative shadow-lg px-3 py-2">
         <nav class="navbar">
             <div class="w-1/4 md:w-1/3 flex items-center">
-                <a href="{% url "home" %}"><h2 class="gradient">INCFAssistant</h2></a>
+                <a href="{% url "homepage" %}"><h2 class="gradient">INCFAssistant</h2></a>
             </div>
             <div class="flex items-center gap-3 md:gap-6 relative">
                 {% if request.user.is_authenticated %}
