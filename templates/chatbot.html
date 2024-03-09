@@ -16,7 +16,6 @@
         .navbar {
             position: relative;
             width: 95%;
-            padding: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -43,10 +42,8 @@
 
         /* Create two equal columns that float next to each other */
         .column {
-            float: left;
-            width: 40%;
-            padding: 10px;
-            height: 300px; /* Should be removed. Only for demonstration */
+            padding: 20px;
+            {% comment %} height: 300px; /* Should be removed. Only for demonstration */ {% endcomment %}
         }
 
         /* Clear floats after the columns */
@@ -115,6 +112,7 @@
             background-color: #fff; /* Background color for the input bar */
             padding: 10px 20px; /* Add padding to the input bar */
             z-index: 1; /* Ensure it's above the chat messages */
+            width: 620px;
         }
 
         .combined-input {
@@ -292,6 +290,7 @@
 .dropdown-overlay {
   position: relative;
   z-index: 1; /* Place the dropdown above the slideshow */
+  float: right;
 }
 
 /* Style for the dropdown content */
@@ -385,7 +384,7 @@
         </nav>
     </header>
 <div class="container"> <!-- Added a container to center the content -->
-    <div class="row">
+    <div style="width: 100%;" class="row">
         <div class="column">
             <center><img src="https://cdn-icons-png.flaticon.com/128/2728/2728212.png" alt="bot" style="height:70%"></center>
             <center><h2>Hello! Welcome to our INCF Assistant! </h2>
