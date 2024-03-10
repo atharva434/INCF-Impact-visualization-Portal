@@ -432,11 +432,37 @@
                 <div class="card card4">
                     <h2>Card 4</h2>
                 </div> -->
-                {% for key,value in impact.items %}
-                <div class="card card{{forloop.counter|mod:3}}">
-                    <h2 style="color: #f0f0f0;">{{key}}:{{value}}</h2>
+                {% for key, value in impact.items %}
+                <div class="card card{{ forloop.counter|mod:3 }}">
+                    <h2 style="color: #f0f0f0;">{{ key }}: <span id="counter{{ forloop.counter }}">{{ value }}</span></h2>
                 </div>
                 {% endfor %}
+
+                <script>
+                    // Function to start the count-up
+                    function countUp(targetValue, interval, counterElement, unitPart) {
+                        let currentValue = 0;
+                        const timer = setInterval(() => {
+                            counterElement.textContent = currentValue + " " + unitPart;
+                            currentValue++;
+                            if (currentValue > targetValue) {
+                                clearInterval(timer);
+                            }
+                        }, interval);
+                    }
+                
+                    // Start the count-up when the page loads
+                    window.onload = function () {
+                        {% for key, value in impact.items %}
+                            var str{{ forloop.counter }} = "{{ value }}";
+                            var matches{{ forloop.counter }} = str{{ forloop.counter }}.match(/(\d+)\s*(\w+)/);
+                            var numericPart{{ forloop.counter }} = parseInt(matches{{ forloop.counter }}[1]);
+                            var unitPart{{ forloop.counter }} = matches{{ forloop.counter }}[2];
+                            var counterElement{{ forloop.counter }} = document.getElementById("counter{{ forloop.counter }}");
+                            countUp(numericPart{{ forloop.counter }}, 500, counterElement{{ forloop.counter }}, unitPart{{ forloop.counter }});
+                        {% endfor %}
+                    };
+                </script>
             </div>
         </div>      
     <div class="container">

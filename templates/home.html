@@ -2,280 +2,253 @@
 <html>
 <head>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-      background-image: linear-gradient(to bottom, #3498db, #2980b9);
-      background-repeat: no-repeat;
-      background-size: cover;
+    /* Reset some default styles */
+    body, ul, li, p {
+        margin: 0;
+        padding: 0;
     }
 
+    body {
+        font-family: Arial, sans-serif;
+        background-color: #f0f5f9;
+    }
+
+    /* Navigation Bar */
+    nav {
+        background-color: #336699;
+        color: #ffffff;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 15px 30px;
+    }
+
+    .logo img {
+        max-height: 50px;
+    }
+
+    .nav-links {
+        list-style-type: none;
+    }
+
+    .nav-links li {
+        display: inline;
+        margin-right: 20px;
+    }
+
+    .nav-links a {
+        text-decoration: none;
+        color: #ffffff;
+        font-weight: bold;
+        transition: color 0.3s;
+    }
+
+    .nav-links a:hover {
+        color: #ff9900;
+    }
+
+    /* Slideshow container */
+    .slideshow-container {
+        max-width: 100%;
+        height: 400px;
+        position: relative;
+        margin-top: 20px;
+    }
+
+    /* Hide the images by default */
+    .mySlides {
+        display: none;
+    }
+
+    /* Next & previous buttons */
+    .prev, .next {
+        cursor: pointer;
+        position: absolute;
+        top: 50%;
+        width: auto;
+        margin-top: -22px;
+        padding: 16px;
+        color: white;
+        font-weight: bold;
+        font-size: 18px;
+        transition: 0.6s ease;
+        border-radius: 0 3px 3px 0;
+        user-select: none;
+        background-color: rgba(0, 0, 0, 0.8);
+    }
+
+    /* Position the "next button" to the right */
+    .next {
+        right: 0;
+        border-radius: 3px 0 0 3px;
+    }
+
+    /* On hover, add a black background color with a little bit see-through */
+    .prev:hover, .next:hover {
+        background-color: rgba(0,0,0,0.6);
+    }
+
+    /* Caption text */
+    .text, .text-small {
+        color: #f2f2f2;
+        font-size: 23px;
+        padding: 8px 12px;
+        position: absolute;
+        text-align: right;
+    }
+
+    .text {
+        font-size: 50px;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .text-small {
+        top: 60%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+    }
+
+    .mySlides img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    /* Content Section */
+    .content {
+        background-color: #ffffff;
+        padding: 50px;
+        text-align: center;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        margin-top: 20px;
+    }
+
+    .content h1 {
+        color: #336699;
+        font-size: 36px;
+        margin-bottom: 20px;
+    }
+
+    .content p {
+        color: #333;
+        font-size: 18px;
+    }
+
+    /* Form container */
     .container {
-      max-width: 500px;
-      background-color: #fff;
-      padding: 40px;
-      border-radius: 4px;
-      position: relative;
-      overflow: hidden;
-      box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px;
+        background-color: #fff;
+        padding: 40px;
+        border-radius: 20px;
+        position: relative;
+        overflow: hidden;
+        box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+        margin: auto;
+        margin-top: 20px;
+        margin-bottom: 20px;
     }
 
     header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 30px; /* Increased margin */
+        text-align: center;
+        margin-bottom: 30px;
     }
 
     header img {
-      height: 40px;
-      width: auto;
-      margin-right: 10px;
+        height: 40px;
+        width: auto;
     }
 
     h2 {
-      margin-top: 0;
-      color: #3498db;
-      margin-bottom: 20px; /* Increased margin */
+        margin-top: 0;
+        color: #3498db;
+        margin-bottom: 20px;
+        text-align: center;
     }
 
     form {
-      margin-top: 30px; /* Increased margin */
+        margin-top: 30px;
     }
 
     label {
-      display: block;
-      margin-top: 15px; /* Increased margin */
-      color: #2980b9;
+        display: block;
+        margin-top: 15px;
+        color: #2980b9;
     }
 
     input[type="text"],
     input[type="url"] {
-      width: 100%;
-      padding: 12px; /* Increased padding */
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      box-sizing: border-box;
-      margin-top: 8px; /* Increased margin */
+        width: 100%;
+        padding: 12px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
+        box-sizing: border-box;
+        margin-top: 8px;
     }
 
     input[type="submit"] {
-      background-color: #2980b9;
-      color: #fff;
-      border: none;
-      padding: 12px 20px; /* Increased padding */
-      cursor: pointer;
-      border-radius: 4px;
-      width: 100%;
-      margin-top: 20px; /* Increased margin */
+        background-color: #2980b9;
+        color: #fff;
+        border: none;
+        padding: 12px 20px;
+        cursor: pointer;
+        border-radius: 4px;
+        width: 100%;
+        margin-top: 20px;
     }
 
     input[type="submit"]:hover {
-      background-color: #1a5276;
+        background-color: #1a5276;
     }
 
-    /* Reset some default styles */
-body, ul, li, p {
-    margin: 0;
-    padding: 0;
-}
-
-body {
-    font-family: Arial, sans-serif;
-    background-color: #f0f5f9;
-}
-
-/* Navigation Bar */
-nav {
-    background-color: #336699;
-    color: #ffffff;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 30px;
-}
-
-.logo img {
-    max-height: 50px;
-}
-
-.nav-links {
-    list-style-type: none;
-}
-
-.nav-links li {
-    display: inline;
-    margin-right: 20px;
-}
-
-.nav-links a {
-    text-decoration: none;
-    color: #ffffff;
-    font-weight: bold;
-    transition: color 0.3s;
-}
-
-.nav-links a:hover {
-    color: #ff9900;
-}
-
-/* Slideshow container */
-.slideshow-container {
-  max-width: 1400px;
-  height: 400px;
-  position: relative;
-  margin: auto;
-}
-/* Hide the images by default */
-.mySlides {
-  display: none;
-}
-
-/* Next & previous buttons */
-.prev, .next {
-  cursor: pointer;
-  position: absolute;
-  top: 50%;
-  width: auto;
-  margin-top: -22px;
-  padding: 16px;
-  color: white;
-  font-weight: bold;
-  font-size: 18px;
-  transition: 0.6s ease;
-  border-radius: 0 3px 3px 0;
-  user-select: none;
-}
-
-/* Position the "next button" to the right */
-.next {
-  right: 0;
-  border-radius: 3px 0 0 3px;
-}
-
-/* On hover, add a black background color with a little bit see-through */
-.prev:hover, .next:hover {
-  background-color: rgba(0,0,0,0.8);
-}
-
-/* Caption text */
-.text {
-  color: #f2f2f2;
-  font-size: 50px;font-weight: bold;
-  padding: 8px 12px;
-  position: absolute;
-  top: 50%; /* Vertically center at the top of the image */
-  left: 70%; /* Horizontally center in the image */
-  transform: translate(-50%, -50%); /* Center both horizontally and vertically */
-
-  text-align: right;
-}
-.text-small {
-  color: #f2f2f2;
-  font-size: 23px;
-  padding-top: 20px;
-  position: absolute;
-  top: 60%; /* Vertically center at the top of the image */
-  left: 71%; /* Horizontally center in the image */
-  transform: translate(-50%, -50%); /* Center both horizontally and vertically */
-  text-align: right;
-}
-
-
-.mySlides img {
-  width: 1400px; /* Set the width */
-  height: 500px; /* Set the height */
-}
-
-/* Number text (1/3 etc) */
-.numbertext {
-  color: #f2f2f2;
-  font-size: 12px;
-  padding: 8px 12px;
-  position: absolute;
-  top: 0;
-}
-
-
-/* Content Section */
-.content {
-    background-color: #ffffff;
-    padding: 50px;
-    text-align: center;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
-
-.content h1 {
-    color: #336699;
-    font-size: 36px;
-    margin-bottom: 20px;
-}
-
-.content p {
-    color: #333;
-    font-size: 18px;
-}
-
-/* Footer */
-footer {
-    background-color: #336699;
-    color: #ffffff;
-    text-align: center;
-    padding: 15px 0;
-    position: fixed;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-}
-</style>
+    /* Footer */
+    footer {
+        background-color: #336699;
+        color: #ffffff;
+        text-align: center;
+        padding: 15px 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+  </style>
 </head>
 <body>
-      <!-- Navigation Bar -->
-      <nav>
-        <div class="logo">
-            <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo" style="background-image: none;">
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Admin</a></li>
-            <li><a href="chatbot">Chatbot</a></li>
-        </ul>
-    </nav>
-
-    <!-- Slideshow container -->
-    <div class="slideshow-container">
-        <div class="mySlides fade">
-          <!-- <div class="numbertext">2 / 3</div> -->
-          <img src="https://www.fens.org/wp-content/uploads/2021/02/INCF_tagline_grey_cyan.png" style="width:100%;height:50%;">
-          <!-- <div class="text">Legal Assistant</div> -->
-        </div>
-  
-        <!-- Full-width images with number and caption text -->
-        <!-- <div class="mySlides fade">
-          <img src="../static/Blue & White Futuristic Gaming Youtube Thumbnail (1).png" style="width:100%">
-        </div> -->
-  
-        <div class="mySlides fade">
-          <!-- <div class="numbertext">3 / 3</div> -->
-          <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoKMNkZG-418FsbJbiJWfp3cnYDKB3PTMEvQ&usqp=CAU" style="width:100%;height:50%;">
-          <!-- <div class="text">Caption Three</div> -->
-        </div>
-  
-        <!-- Next and previous buttons -->
-        <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-        <a class="next" onclick="plusSlides(1)">&#10095;</a>
-      </div>
-
-
-    <!-- Content Section -->
-    <div class="content">
-        <h1>Welcome to INCF</h1>
-        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam scelerisque, odio id auctor consectetur.</p>
+  <!-- Navigation Bar -->
+  <nav>
+    <div class="logo">
+        <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo">
     </div>
+    <ul class="nav-links">
+        <li><a href="#">About Us</a></li>
+        <li><a href="#">Admin</a></li>
+        <li><a href="chatbot">Chatbot</a></li>
+    </ul>
+  </nav>
+
+  <!-- Slideshow container -->
+  <div class="slideshow-container">
+    <div class="mySlides fade">
+      <img src="https://www.fens.org/wp-content/uploads/2021/02/INCF_tagline_grey_cyan.png">
+    </div>
+
+    <div class="mySlides fade">
+      <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSoKMNkZG-418FsbJbiJWfp3cnYDKB3PTMEvQ&usqp=CAU">
+    </div>
+
+    <!-- Next and previous buttons -->
+    <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
+    <a class="next" onclick="plusSlides(1)">&#10095;</a>
+  </div>
+
+  <!-- Content Section -->
+  <div class="content">
+    <h1>Welcome to INCF</h1>
+    <p>We promote the uptake of FAIR data management practices in neuroscience through development of standards and best practices that support FAIR neuroscience.</p>
+  </div>
+
+  <!-- Form Section -->
   <div class="container">
     <header>
       <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="INCf Logo">
@@ -293,45 +266,36 @@ footer {
 
       <input type="submit" value="Submit">
     </form>
-
   </div>
-    <!-- Footer -->
-    <footer>
-      <p>&copy; 2023 Your Website</p>
+
+  <!-- Footer -->
+  <footer>
+    <p>&copy; 2023 Your Website</p>
   </footer>
+
+  <script>
+    // JavaScript for slideshow
+    let slideIndex = 1;
+    showSlides(slideIndex);
+
+    function plusSlides(n) {
+      showSlides(slideIndex += n);
+    }
+
+    function currentSlide(n) {
+      showSlides(slideIndex = n);
+    }
+
+    function showSlides(n) {
+      let i;
+      let slides = document.getElementsByClassName("mySlides");
+      if (n > slides.length) {slideIndex = 1}
+      if (n < 1) {slideIndex = slides.length}
+      for (i = 0; i < slides.length; i++) {
+        slides[i].style.display = "none";
+      }
+      slides[slideIndex-1].style.display = "block";
+    }
+  </script>
 </body>
-<script>
-      function onMenuToggle(e) {
-const navlinks = document.querySelector(".navLinks");
-e.name = e.name === "menu" ? "close" : "menu";
-navlinks.classList.toggle("left-[0%]");
-}
-  let slideIndex = 1;
-showSlides(slideIndex);
-
-// Next/previous controls
-function plusSlides(n) {
-showSlides(slideIndex += n);
-}
-// Thumbnail image controls
-function currentSlide(n) {
-showSlides(slideIndex = n);
-}
-
-function showSlides(n) {
-let i;
-let slides = document.getElementsByClassName("mySlides");
-let dots = document.getElementsByClassName("dot");
-if (n > slides.length) {slideIndex = 1}
-if (n < 1) {slideIndex = slides.length}
-for (i = 0; i < slides.length; i++) {
-  slides[i].style.display = "none";
-}
-for (i = 0; i < dots.length; i++) {
-  dots[i].className = dots[i].className.replace(" active", "");
-}
-slides[slideIndex-1].style.display = "block";
-dots[slideIndex-1].className += " active";
-}
-</script>
 </html>
