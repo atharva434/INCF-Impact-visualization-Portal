@@ -345,12 +345,12 @@ footer {
         const counterContainer = document.querySelector('.counter-container');
     
         const countUp = setInterval(() => {
-          count+=1000;
+          count+=10000;
           if (count >= 5000000) {
             clearInterval(countUp);
           }
           updateCountdown();
-        }, 10); // Adjust the interval for speed
+        }, 1); // Adjust the interval for speed
     
         function updateCountdown() {
           const digits = String(count).split('');
