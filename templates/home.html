@@ -215,6 +215,7 @@ nav {
     margin-bottom: 20px;
 }
 
+
 .content p {
     color: #333;
     font-size: 18px;
@@ -293,92 +294,75 @@ footer {
 
       <input type="submit" value="Submit">
     </form>
-     <!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Horizontal Countdown Animation</title>
-  <style>
-    .counter-container {
-      font-size: 48px;
-      font-family: monospace;
-      display: inline-block;
-    }
-    .flip-digit {
-      display: inline-block;
-      width: 60px;
-      height: 70px;
-      line-height: 70px;
-      text-align: center;
-      margin: 0 5px;
-      background-color: #f0f0f0; /* Default background color */
-      color: #333; /* Default text color */
-      border-radius: 5px;
-      font-weight: bold;
-      animation: flip-animation 0.5s ease-in-out forwards;
-    }
-    @keyframes flip-animation {
-      0% {
-        transform: scaleX(1);
-      }
-      50% {
-        transform: scaleX(0);
-      }
-      100% {
-        transform: scaleX(1);
-      }
-    }
-    /* Colors for different digits */
-    #digit-1 { background-color: #ff6347; color: white; }
-    #digit-2 { background-color: #1e90ff; color: white; }
-    #digit-3 { background-color: #32cd32; color: white; }
-    #digit-4 { background-color: #ff00ff; color: white; }
-    #digit-5 { background-color: #ffd700; color: white; }
-    #digit-6 { background-color: #008080; color: white; }
-    #digit-7 { background-color: #ffa500; color: white; }
-    #digit-8 { background-color: #4682b4; color: white; }
-    #digit-9 { background-color: #7fff00; color: black; }
-    #digit-0 { background-color: #8a2be2; color: white; }
-  </style>
-</head>
-<body>
-  <div class="counter-container">
-    <div class="flip-digit" id="digit-1">1</div>
-    <div class="flip-digit" id="digit-2">2</div>
-    <div class="flip-digit" id="digit-3">3</div>
-    <div class="flip-digit" id="digit-4">4</div>
-    <div class="flip-digit" id="digit-5">5</div>
-    <div class="flip-digit" id="digit-6">6</div>
-    <div class="flip-digit" id="digit-7">7</div>
-    <div class="flip-digit" id="digit-8">8</div>
-    <div class="flip-digit" id="digit-9">9</div>
-    <div class="flip-digit" id="digit-0">0</div>
-  </div>
-
-  <script>
-    let count = 0;
-    const counterContainer = document.querySelector('.counter-container');
-
-    const countUp = setInterval(() => {
-      count++;
-      if (count >= 10000) {
-        clearInterval(countUp);
-      }
-      updateCountdown();
-    }, 1000); // Adjust the interval for speed
-
-    function updateCountdown() {
-      const digits = String(count).split('');
-      counterContainer.innerHTML = '';
-      digits.forEach(digit => {
-        counterContainer.innerHTML += `<div class="flip-digit" id="digit-${digit}">${digit}</div>`;
-      });
-    }
-  </script>
-</body>
-</html>
-
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <title>Horizontal Countdown Animation</title>
+      <style>
+        .counter-container {
+          font-size: 24px; /* Reduced font size */
+          font-family: monospace;
+          display: inline-block;
+          width: 500px; /* Increased width */
+        }
+        .flip-digit {
+          display: inline-block;
+          width: 30px; /* Reduced width */
+          height: 40px; /* Reduced height */
+          line-height: 40px; /* Adjusted line height */
+          text-align: center;
+          margin: 0 2px; /* Reduced margin */
+          background-color: #f0f0f0; /* Default background color */
+          color: #333; /* Default text color */
+          border-radius: 5px;
+          font-weight: bold;
+        }
+        /* Colors for all digits */
+        .flip-digit {
+          background-color: #f0f0f0; /* Single color background */
+          color: #333; /* Single color text */
+        }
+      </style>
+    </head>
+    <body>
+      <div class="counter-container">
+        <div class="flip-digit" id="digit-1">1</div>
+        <div class="flip-digit" id="digit-2">2</div>
+        <div class="flip-digit" id="digit-3">3</div>
+        <div class="flip-digit" id="digit-4">4</div>
+        <div class="flip-digit" id="digit-5">5</div>
+        <div class="flip-digit" id="digit-6">6</div>
+        <div class="flip-digit" id="digit-7">7</div>
+        <div class="flip-digit" id="digit-8">8</div>
+        <div class="flip-digit" id="digit-9">9</div>
+        <div class="flip-digit" id="digit-0">0</div>
+      </div>
+    
+      <script>
+        let count = 0;
+        const counterContainer = document.querySelector('.counter-container');
+    
+        const countUp = setInterval(() => {
+          count+=1000;
+          if (count >= 5000000) {
+            clearInterval(countUp);
+          }
+          updateCountdown();
+        }, 10); // Adjust the interval for speed
+    
+        function updateCountdown() {
+          const digits = String(count).split('');
+          counterContainer.innerHTML = '';
+          digits.forEach(digit => {
+            counterContainer.innerHTML += `<div class="flip-digit">${digit}</div>`;
+          });
+        }
+      </script>
+    </body>
+    </html>
+    
   </div>
     <!-- Footer -->
     <footer>
