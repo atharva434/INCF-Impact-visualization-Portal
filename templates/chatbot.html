@@ -94,11 +94,14 @@
 
         /* Style the chat container within the card */
         .chat-container {
+            position: relative;
+            display: flex;
+            flex-direction: column;
             background-color: #f0f0f0; /* Background color for the chat container */
             border-radius: 10px; /* Rounded corners for the chat container */
              /* Add padding to the chat container */
             flex-grow: 1; /* Allow the chat container to grow and take available space */
-            max-height: 500px; /* Set a maximum height for the chat container if needed */
+            height: 500px; /* Set a maximum height for the chat container if needed */
             overflow-y: auto; /* Add vertical scroll if the content overflows */
         }
 
@@ -107,12 +110,12 @@
             display: flex;
             position: sticky;
             align-items: center;
-            margin-top: 20px; /* Add space between chat content and input */
+            margin-top: auto; /* Add space between chat content and input */
             bottom: 0; /* Stick it to the bottom */
             background-color: #fff; /* Background color for the input bar */
             padding: 10px 20px; /* Add padding to the input bar */
             z-index: 1; /* Ensure it's above the chat messages */
-            width: 620px;
+            width: 100%;
         }
 
         .combined-input {
