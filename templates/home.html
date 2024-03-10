@@ -77,7 +77,7 @@
     input[type="submit"]:hover {
       background-color: #1a5276;
     }
-
+ 
     /* Reset some default styles */
 body, ul, li, p {
     margin: 0;
@@ -215,10 +215,25 @@ nav {
     margin-bottom: 20px;
 }
 
+
 .content p {
     color: #333;
     font-size: 18px;
 }
+
+<!-- add countdown-->
+/* Add your CSS styles here */
+.impact-number {
+  text-align: center;
+}
+
+.countdown {
+  font-size: 36px; /* Adjust font size as needed */
+  font-weight: bold;
+  color: #333; /* Text color */
+  transition: all 1s ease; /* Transition effect */
+}
+
 
 /* Footer */
 footer {
@@ -234,17 +249,70 @@ footer {
 </style>
 </head>
 <body>
-      <!-- Navigation Bar -->
-      <nav>
-        <div class="logo">
-            <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo" style="background-image: none;">
-        </div>
-        <ul class="nav-links">
-            <li><a href="#">About Us</a></li>
-            <li><a href="#">Admin</a></li>
-            <li><a href="chatbot">Chatbot</a></li>
-        </ul>
-    </nav>
+ <!-- Navigation bar-->
+
+ <!DOCTYPE html>
+ <html lang="en">
+ <head>
+   <meta charset="UTF-8">
+   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+   <title>Navigation Bar</title>
+   <style>
+     /* Reset default margin and padding */
+     body, nav, ul {
+       margin: 0;
+       padding: 0;
+     }
+ 
+     /* Style the navigation bar */
+     nav {
+       background-color: #333; /* Background color of the navigation bar */
+       padding: 10px 20px; /* Padding to add space around the content */
+       position: fixed; /* Fixed positioning */
+       top: 0; /* Align to the top */
+       left: 0; /* Align to the left */
+       width: 100%; /* Full width */
+     }
+ 
+     /* Style the logo */
+     .logo img {
+       width: 100px; /* Adjust the width of the logo as needed */
+       height: auto; /* Maintain aspect ratio */
+     }
+ 
+     /* Style the navigation links */
+     .nav-links {
+       list-style: none; /* Remove default list styling */
+       float: right; /* Float the links to the right */
+     }
+ 
+     .nav-links li {
+       display: inline-block; /* Display links horizontally */
+       margin-left: 20px; /* Add space between links */
+     }
+ 
+     .nav-links li a {
+       color: white; /* Text color of the links */
+       text-decoration: none; /* Remove underline from links */
+     }
+   </style>
+ </head>
+ <body>
+   <!-- Navigation Bar -->
+   <nav>
+     <div class="logo">
+         <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo">
+     </div>
+     <ul class="nav-links">
+         <li><a href="#">About Us</a></li>
+         <li><a href="#">Admin</a></li>
+         <li><a href="chatbot">Chatbot</a></li>
+     </ul>
+   </nav>
+ </body>
+ </html>
+ 
+  
 
     <!-- Slideshow container -->
     <div class="slideshow-container">
@@ -293,7 +361,29 @@ footer {
 
       <input type="submit" value="Submit">
     </form>
+    <!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Homepage with Countdown Animation</title>
+  <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
+</head>
+<body>
+  <div class="impact-number" id="epilepsy">
+    <h2>Epilepsy</h2>
+    <span class="countdown">1</span> <!-- Initial value of countdown -->
+    <p>cases reported</p>
+  </div>
 
+  <!-- Repeat the above structure for other impact numbers -->
+
+  <script src="script.js"></script> <!-- Link to external JavaScript file -->
+</body>
+</html>
+
+  
+    
   </div>
     <!-- Footer -->
     <footer>
