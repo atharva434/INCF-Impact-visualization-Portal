@@ -435,18 +435,44 @@
                 {% for key, value in impact.items %}
                 <div class="card card{{ forloop.counter|mod:3 }}">
                     <h2 style="color: #f0f0f0;">{{ key }}: <span id="counter{{ forloop.counter }}">{{ value }}</span></h2>
+                    {% comment %} <h2 style="color: #f0f0f0;">{{ key }}:{{ value }}</h2> {% endcomment %}
                 </div>
                 {% endfor %}
 
                 <script>
+                    // Function to convert unit string to numerical value
+                    function convertToNumericValue(str) {
+                        const numericRegex = /(\d+(\.\d+)?|\.\d+)\s*(\w+)/; 
+                        const matches = str.match(numericRegex);
+                        if (matches) {
+                            const numericPart = parseFloat(matches[1]); 
+                            const unitPart = matches[3];
+                            let multiplier = 1;
+                            switch (unitPart.toLowerCase()) {
+                                case 'thousand':
+                                    multiplier = 1000;
+                                    break;
+                                case 'million':
+                                    multiplier = 1000000;
+                                    break;
+                                case 'billion':
+                                    multiplier = 1000000000;
+                                    break;
+                            }
+                            return numericPart * multiplier;
+                        }
+                        return NaN; // Return NaN if the input format is invalid
+                    }
+                
                     // Function to start the count-up
-                    function countUp(targetValue, interval, counterElement, unitPart) {
+                    function countUp(targetValue, interval, counterElement) {
                         let currentValue = 0;
                         const timer = setInterval(() => {
-                            counterElement.textContent = currentValue + " " + unitPart;
-                            currentValue++;
-                            if (currentValue > targetValue) {
+                            counterElement.textContent = currentValue.toLocaleString(); // Add thousands separator
+                            currentValue += Math.ceil(targetValue * 0.01); 
+                            if (currentValue >= targetValue) {
                                 clearInterval(timer);
+                                counterElement.textContent = targetValue.toLocaleString();
                             }
                         }, interval);
                     }
@@ -455,14 +481,14 @@
                     window.onload = function () {
                         {% for key, value in impact.items %}
                             var str{{ forloop.counter }} = "{{ value }}";
-                            var matches{{ forloop.counter }} = str{{ forloop.counter }}.match(/(\d+)\s*(\w+)/);
-                            var numericPart{{ forloop.counter }} = parseInt(matches{{ forloop.counter }}[1]);
-                            var unitPart{{ forloop.counter }} = matches{{ forloop.counter }}[2];
+                            var numericValue{{ forloop.counter }} = convertToNumericValue(str{{ forloop.counter }});
                             var counterElement{{ forloop.counter }} = document.getElementById("counter{{ forloop.counter }}");
-                            countUp(numericPart{{ forloop.counter }}, 500, counterElement{{ forloop.counter }}, unitPart{{ forloop.counter }});
+                            countUp(numericValue{{ forloop.counter }}, 50, counterElement{{ forloop.counter }});
                         {% endfor %}
                     };
                 </script>
+                
+                
             </div>
         </div>      
     <div class="container">
