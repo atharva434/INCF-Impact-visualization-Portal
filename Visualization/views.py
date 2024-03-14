@@ -5,6 +5,8 @@ from .retrievalqna import chat,ingest,ingest_documents,fill_db
 from django import template
 from .models import Organization,Project
 from django.core.files.storage import FileSystemStorage
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
 
 
 register = template.Library()
@@ -45,25 +47,28 @@ def organization(request):
 
 responses={}
 
+@csrf_exempt  # This decorator is to bypass CSRF token for demonstration. It's better to handle CSRF in AJAX calls properly.
 def chatbot(request):
     global responses
-    if request.method=="POST":
-        query=request.POST["query"]
-        organization=Organization.objects.all()
-        # urls=list(organization.values_list("url", flat = True))
-        answer=chat(query)
+    if request.method == "POST":
+        query = request.POST.get("query")
+        organization = Organization.objects.all()
+        # Assume chat() function and everything else works as intended
+        answer = chat(query)
         for i in answer["source_documents"]:
-            source=i.metadata["source"]
+            source = i.metadata["source"]
             break
-        answer["source"]=source
+        answer["source"] = source
+        responses[query] = answer
 
-        responses[query]=answer
-        print(responses[query])
-       
-
-        return render(request,"chatbot.html",{"responses":responses,"source":source})
-    responses={}
-    return render(request,"chatbot.html")
+        # If AJAX request, return JSON
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return JsonResponse({"query": query, "answer": answer['answer'], "source": source})
+        
+        return render(request, "chatbot.html", {"responses": responses, "source": source})
+    
+    responses = {}
+    return render(request, "chatbot.html")
 
 def total_impact(request):
     organization=Organization.objects.all()
@@ -110,6 +115,3 @@ def get_qa_model(request):
 
 def upload(request):
     return render(request,"upload_pdf.html")
-
-
-
