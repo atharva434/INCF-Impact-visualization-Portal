@@ -1,0 +1,19 @@
+<nav>
+    <div class="logo">
+        <a href="{% url 'homepage' %}">
+            <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo" style="background-image: none;">
+        </a>
+    </div>
+    
+    <ul class="nav-links">
+        {% if user.is_authenticated %}
+        <li><a href="#">Log Out</a></li> 
+        {% comment %} {% url 'logout' %} {% endcomment %}
+        {% else %}
+        <li><a href="#">Log In</a></li> 
+        {% comment %} {% url 'login' %} {% endcomment %}
+        {% endif %}
+        <li><a href="{% url "home" %}">Admin</a></li>
+        <li><a href="{% url "chatbot" %}">Chatbot</a></li>
+    </ul>
+</nav>

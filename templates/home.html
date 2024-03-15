@@ -216,7 +216,7 @@
 </head>
 <body>
   <!-- Navigation Bar -->
-  <nav>
+  {% comment %} <nav>
     <div class="logo">
         <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo">
     </div>
@@ -225,7 +225,8 @@
         <li><a href="#">Admin</a></li>
         <li><a href="chatbot">Chatbot</a></li>
     </ul>
-  </nav>
+  </nav> {% endcomment %}
+  {% include 'header.html' %}
 
   <!-- Slideshow container -->
   <div class="slideshow-container">
@@ -263,15 +264,12 @@
 
       <label for="url">URL:</label>
       <input type="url" id="url" name="url">
-
       <input type="submit" value="Submit">
     </form>
   </div>
 
   <!-- Footer -->
-  <footer>
-    <p>&copy; 2023 Your Website</p>
-  </footer>
+  {% include 'footer.html' %}
 
   <script>
     // JavaScript for slideshow

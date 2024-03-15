@@ -175,9 +175,6 @@
         .expanded-content {
             margin-top: 10px;
         }     
-    </style>
-    <style>
-
         /* Reset some default styles */
     body, ul, li, p {
         margin: 0;
@@ -374,12 +371,16 @@
     font-size: 16px;
     opacity: 0.8;
 }
-
+    footer {
+        width: 100%;
+        position: relative;
+        bottom: 0;
+    }
     </style>
 </head>
 <body>
         <!-- Navigation Bar -->
-        <nav>
+        {% comment %} <nav>
             <div class="logo">
                 <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo" style="background-image: none;">
             </div>
@@ -388,7 +389,8 @@
                 <li><a href="adminpage">Admin</a></li>
                 <li><a href="chatbot">Chatbot</a></li>
             </ul>
-        </nav>
+        </nav> {% endcomment %}
+        {% include 'header.html' %}
     
         <!-- Slideshow container -->
         <div class="slideshow-container">
@@ -523,7 +525,7 @@
             {% endfor %}
         </div>
     </div>
-
+    {% include 'footer.html' %}
 </body>
 <script>
         function onMenuToggle(e) {
@@ -558,8 +560,6 @@ function showSlides(n) {
   slides[slideIndex-1].style.display = "block";
   dots[slideIndex-1].className += " active";
 }
-</script>
-    <script>
         const filterDropdown = document.querySelector('.filter-dropdown');
         const cards = document.querySelectorAll('.card');
         const modals = document.querySelectorAll('.modal');
