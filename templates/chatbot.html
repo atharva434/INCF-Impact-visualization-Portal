@@ -42,7 +42,7 @@
         /* Create two equal columns that float next to each other */
         .column {
             padding: 20px;
-            {% comment %} height: 300px; /* Should be removed. Only for demonstration */ pet {% endcomment %}
+            {% comment %} height: 300px; /* Should be removed. Only for demonstration */ {% endcomment %}
         }
 
         /* Clear floats after the columns */
@@ -415,7 +415,7 @@ footer {
 </head>
 <body>
     {% include 'header.html' %}
-<div class="container"> <!-- Added a container to center the content ty-->
+<div class="container"> <!-- Added a container to center the content -->
     <div style="width: 100%;" class="row">
         <div class="column">
             <center><img src="https://cdn-icons-png.flaticon.com/128/2728/2728212.png" alt="bot" style="height:70%"></center>
@@ -460,7 +460,7 @@ footer {
             var formData = $(this).serialize(); // Serialize form data
     
             $('#loader').show(); // Show the loader
-            $('.btn').hide(); // pHide the submit button
+            $('.btn').hide(); // Hide the submit button
     
             $.ajax({
                 type: 'POST',
@@ -472,11 +472,11 @@ footer {
                     var newBotMsg = `<div class="box2 sb2">Chatbot:&nbsp;${response.answer}&nbsp;<br><br> Content cited from Link = <a href="${response.source}" target="_blank">${response.source}</a></div>`;
                     $('form').before(newUserMsg);
                     $('form').before(newBotMsg);
-                    $('#user-input').val(''); // lClear input after submission
+                    $('#user-input').val(''); // Clear input after submission
                 },
                 complete: function() {
-                    $('#loader').hide(); // aHide the loader
-                    $('.btn').show(); // yShow the submit button again
+                    $('#loader').hide(); // Hide the loader
+                    $('.btn').show(); // Show the submit button again
                 }
             });
         });
