@@ -1,6 +1,13 @@
 <!DOCTYPE html>
 <html>
 <head>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
     <title>{{organization.name}}</title>
     <style>
         /* Navigation Bar */
@@ -83,11 +90,6 @@
             height: 40px;
             width: auto;
             margin-right: 10px;
-        }
-
-        h2 {
-            margin-top: 0;
-            color: #3498db;
         }
 
         .filter-dropdown {
@@ -245,27 +247,28 @@
             {% comment %} display: inline-block; /* Make the link a block-level element for styling */ {% endcomment %}
             margin-bottom: 20px;
         }
-        
+        footer {
+            background-color: #336699;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 0;
+            position: relative;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        .title {
+            font-size: 40px;
+            margin-top: 0;
+            color: #3498db;
+        }
 
     </style>
 </head>
 <body>
-        <nav>
-            <div class="logo">
-                <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo" style="background-image: none;">
-            </div>
-            <ul class="nav-links">
-                <li><a href="#">About Us</a></li>
-                <li><a href="#">Admin</a></li>
-                <li><a href="#">Chatbot</a></li>
-            </ul>
-        </nav>
+    {% include 'header.html' %}
     <div class="container">
-        <header>
-            <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="INCf Logo">
-        </header>
-
-        <h2>{{organization.name}}</h2>
+        <div class="title">{{organization.name}}</div>
         <h3>{{impact}}</h3>
         {% if request.user.is_superuser %}
         <div class="add-project">
@@ -305,89 +308,89 @@
             {% endfor %}
         </div>
     </div>
-
-    <script>
-        /* const filterDropdown = document.querySelector('.filter-dropdown');
-        const cards = document.querySelectorAll('.card');
-        const modals = document.querySelectorAll('.modal');
-        const closeButtons = document.querySelectorAll('.close-button');
-
-        filterDropdown.addEventListener('change', () => {
-            const selectedValue = filterDropdown.value;
-            
-            console.log('Selected Value:', selectedValue);
-        
-            cards.forEach((card) => {
-                const cardClassNames = card.className.split(' '); // Split class names into an array
-                console.log('Card Class Names:', cardClassNames);
-                
-                if (selectedValue === 'all' || cardClassNames.includes(selectedValue)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-        
-
-        const expandButtons = document.querySelectorAll('.expand-button');
-
-        expandButtons.forEach((button, index) => {
-            button.addEventListener('click', () => {
-                const expandedContent = modals[index].querySelector('.expanded-content');
-                const cardContent = cards[index].querySelector('.card-content').innerHTML;
-                const additionalContent = cards[index].querySelector('.additional-content').innerHTML;
-                expandedContent.innerHTML = cardContent + additionalContent;
-                modals[index].style.display = 'block';
-            });
-        });
-
-        closeButtons.forEach((button, index) => {
-            button.addEventListener('click', () => {
-                modals[index].style.display = 'none';
-            });
-        }); */
-        const filterDropdown = document.querySelector('.filter-dropdown');
-        const cards = document.querySelectorAll('.card');
-        const modals = document.querySelectorAll('.modal');
-        const closeButtons = document.querySelectorAll('.close-button');
-
-        filterDropdown.addEventListener('change', () => {
-            const selectedValue = filterDropdown.value.replace(/\s+/g, '-');;
-
-            console.log('Selected Value:', selectedValue);
-
-            cards.forEach((card) => {
-                const cardClassList = card.className.replace(/\s+/g, '-');;
-                //cardClassList.remove(cardClassList[0]);
-                console.log('Card Class List:', cardClassList);
-                
-                if (selectedValue === 'all' || cardClassList.includes(selectedValue)) {
-                    card.style.display = 'flex';
-                } else {
-                    card.style.display = 'none';
-                }
-            });
-        });
-
-        const expandButtons = document.querySelectorAll('.expand-button');
-
-        expandButtons.forEach((button, index) => {
-            button.addEventListener('click', () => {
-                const expandedContent = modals[index].querySelector('.expanded-content');
-                const cardContent = cards[index].querySelector('.card-content').innerHTML;
-                const additionalContent = cards[index].querySelector('.additional-content').innerHTML;
-                expandedContent.innerHTML = cardContent + additionalContent;
-                modals[index].style.display = 'block';
-            });
-        });
-
-        closeButtons.forEach((button, index) => {
-            button.addEventListener('click', () => {
-                modals[index].style.display = 'none';
-            });
-        });
-
-    </script>
+{% include 'footer.html' %}
 </body>
+<script>
+    /* const filterDropdown = document.querySelector('.filter-dropdown');
+    const cards = document.querySelectorAll('.card');
+    const modals = document.querySelectorAll('.modal');
+    const closeButtons = document.querySelectorAll('.close-button');
+
+    filterDropdown.addEventListener('change', () => {
+        const selectedValue = filterDropdown.value;
+        
+        console.log('Selected Value:', selectedValue);
+    
+        cards.forEach((card) => {
+            const cardClassNames = card.className.split(' '); // Split class names into an array
+            console.log('Card Class Names:', cardClassNames);
+            
+            if (selectedValue === 'all' || cardClassNames.includes(selectedValue)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+    
+
+    const expandButtons = document.querySelectorAll('.expand-button');
+
+    expandButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            const expandedContent = modals[index].querySelector('.expanded-content');
+            const cardContent = cards[index].querySelector('.card-content').innerHTML;
+            const additionalContent = cards[index].querySelector('.additional-content').innerHTML;
+            expandedContent.innerHTML = cardContent + additionalContent;
+            modals[index].style.display = 'block';
+        });
+    });
+
+    closeButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            modals[index].style.display = 'none';
+        });
+    }); */
+    const filterDropdown = document.querySelector('.filter-dropdown');
+    const cards = document.querySelectorAll('.card');
+    const modals = document.querySelectorAll('.modal');
+    const closeButtons = document.querySelectorAll('.close-button');
+
+    filterDropdown.addEventListener('change', () => {
+        const selectedValue = filterDropdown.value.replace(/\s+/g, '-');;
+
+        console.log('Selected Value:', selectedValue);
+
+        cards.forEach((card) => {
+            const cardClassList = card.className.replace(/\s+/g, '-');;
+            //cardClassList.remove(cardClassList[0]);
+            console.log('Card Class List:', cardClassList);
+            
+            if (selectedValue === 'all' || cardClassList.includes(selectedValue)) {
+                card.style.display = 'flex';
+            } else {
+                card.style.display = 'none';
+            }
+        });
+    });
+
+    const expandButtons = document.querySelectorAll('.expand-button');
+
+    expandButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            const expandedContent = modals[index].querySelector('.expanded-content');
+            const cardContent = cards[index].querySelector('.card-content').innerHTML;
+            const additionalContent = cards[index].querySelector('.additional-content').innerHTML;
+            expandedContent.innerHTML = cardContent + additionalContent;
+            modals[index].style.display = 'block';
+        });
+    });
+
+    closeButtons.forEach((button, index) => {
+        button.addEventListener('click', () => {
+            modals[index].style.display = 'none';
+        });
+    });
+
+</script>
 </html>
