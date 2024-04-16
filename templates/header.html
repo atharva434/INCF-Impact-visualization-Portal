@@ -7,10 +7,14 @@
     
     <ul class="nav-links">
         {% if user.is_authenticated %}
-        <li><a href="#">Log Out</a></li> 
+        <span style="font-weight: bold; text-transform: uppercase; margin-right: 20px;">{{ user.get_username }}</span>
+        {% endif %}
+        {% if user.is_authenticated %}
+        <li><a href="{% url "logout" %}">Log Out</a></li> 
         {% comment %} {% url 'logout' %} {% endcomment %}
         {% else %}
-        <li><a href="#">Log In</a></li> 
+        <li><a href="{% url "login" %}">Log In</a></li> 
+        <li><a href="{% url "signup" %}">Sign Up</a></li>
         {% comment %} {% url 'login' %} {% endcomment %}
         {% endif %}
         <li><a href="{% url "home" %}">Admin</a></li>

@@ -7,12 +7,19 @@ from .models import Organization,Project
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.forms import UserCreationForm
+from .models import ModifiedUserCreationForm
+from django.contrib.auth.models import User
+from django.http import HttpResponse
+from django.contrib import auth
 
 
 register = template.Library()
 @register.filter
 def modulo(num, val):
     return num % val == 0
+
 def home(request):
     organization=Organization.objects.all()
     # urls=list(organization.values_list("impact", flat = True))
@@ -20,13 +27,53 @@ def home(request):
     
     return render(request,"home.html")
 
+def signup(request):
+    if request.method == "POST":
+        if request.POST['password1'] == request.POST['password2']:
+            try:
+                User.objects.get(username = request.POST['username'])
+                return render (request,'signup.html', {'error':'Username is already taken!'})
+            except User.DoesNotExist:
+                last_user_id=User.objects.last().id
+                user = User.objects.create_user(request.POST['username'],password=request.POST['password1'],id=last_user_id+1)
+                auth.login(request,user)
+                return redirect('home')
+        else:
+            return render (request,'signup.html', {'error':'Password does not match!'})
+    else:
+        return render(request,'signup.html')
+
+def Login(request):
+    if request.method=="POST":
+        username = request.POST.get('username') 
+        password = request.POST.get('password')
+
+        user = authenticate(username = username, password=password)
+        
+        if user:
+            if user.is_active:
+                login(request, user) #login is the django's default function
+                
+                return redirect("home")
+
+            else: 
+                return HttpResponse("Account not Active")
+        
+        else:
+            print("Someone tried to login and failed")
+            print("Username: {} and password {}".format(username,password))
+            return HttpResponse("Invalid Login details supplied!")
+
+    else:
+        return render(request, 'login.html',{})
+
 def homepage(request):
     organizations=Organization.objects.all()
     # urls=list(organizations.values_list("url", flat = True))
     # ingest(urls)
     urls=list(organizations.values_list("impact", flat = True))
     impact=calculator(urls)
-    print(type(impact))
+    print(type(impact)) 
     return render(request,"newpage.html",{"organization":organizations,"impact":impact})
 
 def organization(request):
@@ -42,8 +89,6 @@ def organization(request):
         organization.save()
     ingest(url)
     return render(request,"home.html",{"name":org_name})
-
-
 
 responses={}
 
