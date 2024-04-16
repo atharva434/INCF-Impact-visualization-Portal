@@ -2,40 +2,47 @@
 <html>
 <head>
     <title>{{organization.name}}</title>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
     <style>
         /* Navigation Bar */
-    nav {
-        background-color: #336699;
-        color: #ffffff;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        padding: 15px 30px;
-    }
+        nav {
+            background-color: #336699;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
     
-    .logo img {
-        max-height: 50px;
-    }
+        .logo img {
+            max-height: 50px;
+        }
     
-    .nav-links {
-        list-style-type: none;
-    }
+        .nav-links {
+            list-style-type: none;
+        }
     
-    .nav-links li {
-        display: inline;
-        margin-right: 20px;
-    }
+        .nav-links li {
+            display: inline;
+            margin-right: 20px;
+        }
     
-    .nav-links a {
-        text-decoration: none;
-        color: #ffffff;
-        font-weight: bold;
-        transition: color 0.3s;
-    }
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
     
-    .nav-links a:hover {
-        color: #ff9900;
-    }
+        .nav-links a:hover {
+            color: #ff9900;
+        }
         .card-grid {
             display: flex;
             flex-wrap: wrap;
@@ -61,12 +68,13 @@
         } */
 
         .container {
-            max-width: 900px;
+            width: 900px;
             background-color: #fff;
             padding: 30px;
             border-radius: 4px;
             margin: 0 auto;
             margin-top: 80px;
+            margin-bottom: 20px;
             position: relative;
             z-index: 1;
             overflow: visible;
@@ -245,12 +253,19 @@
             {% comment %} display: inline-block; /* Make the link a block-level element for styling */ {% endcomment %}
             margin-bottom: 20px;
         }
-        
-
+        footer {
+        background-color: #336699;
+        color: #ffffff;
+        text-align: center;
+        padding: 15px 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        }
     </style>
 </head>
 <body>
-        <nav>
+        {% comment %} <nav>
             <div class="logo">
                 <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo" style="background-image: none;">
             </div>
@@ -259,7 +274,8 @@
                 <li><a href="#">Admin</a></li>
                 <li><a href="#">Chatbot</a></li>
             </ul>
-        </nav>
+        </nav> {% endcomment %}
+    {% include 'header.html' %}
     <div class="container">
         <header>
             <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="INCf Logo">
@@ -305,7 +321,7 @@
             {% endfor %}
         </div>
     </div>
-
+    {% include 'footer.html' %}
     <script>
         /* const filterDropdown = document.querySelector('.filter-dropdown');
         const cards = document.querySelectorAll('.card');

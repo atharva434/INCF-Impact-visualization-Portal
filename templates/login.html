@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Sign Up</title>
+{% load static %}
+<style>
+    /* Navigation Bar */
+        nav {
+            background-color: #336699;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+            height: 54px;
+        }
+    
+        .logo img {
+            max-height: 50px;
+        }
+    
+        .nav-links {
+            list-style-type: none;
+        }
+    
+        .nav-links li {
+            display: inline;
+            margin-right: 20px;
+        }
+    
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+    
+        .nav-links a:hover {
+            color: #ff9900;
+        }
+    body {
+    margin: 0;
+    padding: 0;
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    height: 100%
+  }
+  
+  .container {
+    max-width: 500px;
+    margin: auto auto;
+    text-align: center;
+    height: 500px;
+  }
+  
+  .logo img {
+    width: 100px;
+    display: block;
+    margin: 0 auto;
+  }
+  
+  .form-box {
+    background-color: #fff;
+    padding: 40px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    margin-top: 100px;
+    height: 290px;
+  }
+  
+  .form-box h2 {
+    margin-bottom: 30px;
+    color: #333;
+  }
+  
+  .form-group {
+    margin-bottom: 20px;
+  }
+  
+  .form-group input {
+    width: 94%;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  button {
+    width: 100%;
+    padding: 10px;
+    background-color: #336699;
+    color: #fff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    margin-top: 10px;
+  }
+  
+  button:hover {
+    background-color: #2c577d;
+  }
+  footer {
+        background-color: #336699;
+        color: #ffffff;
+        text-align: center;
+        padding: 15px 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+        height: 19px;
+        display: flex;
+        justify-content: center; /* Horizontally center the content */
+        align-items: center; /* Vertically center the content */
+        margin-top: 36px;
+        }
+  </style>
+</head>
+<body>
+    {% include 'header.html' %}
+<div class="container">
+  <div class="form-box">
+    <div class="logo">
+        <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo">
+      </div>
+    <h2>Log In</h2>
+    <form method="post">
+      {% csrf_token %}
+      <div class="form-group">
+        <input type="username" name = "username" placeholder="Username" required>
+      </div>
+      <div class="form-group">
+        <input type="password" name = "password" placeholder="Password" required>
+      </div>
+      <button type="submit">Log In</button>
+    </form>
+  </div>
+</div>
+{% include 'footer.html' %}
+</body>
+</html>
