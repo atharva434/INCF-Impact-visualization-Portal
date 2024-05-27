@@ -13,7 +13,10 @@
         <li><a href="#">Log In</a></li> 
         {% comment %} {% url 'login' %} {% endcomment %}
         {% endif %}
-        <li><a href="{% url "home" %}">Admin</a></li>
+        {% if user.is_superuser %}
+        <li><a href="{% url "upload" %}">Upload</a></li>
+        <li><a href="{% url "adminpage" %}">Admin</a></li>
+        {% endif %}
         <li><a href="{% url "chatbot" %}">Chatbot</a></li>
     </ul>
 </nav>

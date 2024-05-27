@@ -1,20 +1,184 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    {% load static %}
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+    <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
+    <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/vendor/@fortawesome/fontawesome-free/css/all.min.css">
+    <title>File Upload</title>
+    <style>
+        /* Navigation Bar */
+        nav {
+            background-color: #336699;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+        
+        .logo img {
+            max-height: 50px;
+        }
+        
+        .nav-links {
+            list-style-type: none;
+        }
+        
+        .nav-links li {
+            display: inline;
+            margin-right: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #ff9900;
+        }
+        footer {
+            background-color: #336699;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 0;
+            position: fixed;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+        }
+        .file-input-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 80vh; /* Adjust height as needed */
+        }
+        
+        .cards {
+            background-color: #f0f5f9; /* Background color for the container */
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Box shadow for a slight elevation effect */
+            width: 80%; /* Increase the width */
+            max-width: 600px;
+            height: 70vh;
+        }
+        
+        .file-input-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 2px dashed #ccc;
+            padding: 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            width: 100%;
+            height: 355px;
+        }
+        
+        input[type="file"] {
+            display: none; /* Hide the default file input */
+        }
+        
+        .custom-file-upload {
+            cursor: pointer;
+            background-color: #21a16c;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        
+        .custom-file-upload:hover {
+            background-color: #1c8e5f; /* Darker color on hover */
+        }         
+        .alert {
+            position: relative;
+            padding: 0.75rem 1.25rem;
+            margin-bottom: 1rem;
+            border: 1px solid transparent;
+            border-radius: 0.25rem;
+            background-color: #d4edda;
+            color: #155724;
+            width: 100%; /* Adjust width as needed */
+            margin: 0 auto; /* Center the message */
+        }
+
+        .close {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            color: inherit;
+            cursor: pointer;
+        }    
+        body {
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            overflow: hidden;
+            background-image: url(https://cdn2.vectorstock.com/i/1000x1000/07/81/brain-geometric-shapes-blue-colors-vector-7730781.jpg);
+        }
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: inherit;
+            filter: blur(5px); /* Adjust the blur radius as needed */
+            z-index: -1; /* Place it behind the content */
+        }
+        form {
+            display: flex;
+            flex-direction: column; /* Stack elements vertically */
+            align-items: center; /* Center horizontally */
+        }
+        
+        /* Additional CSS to ensure proper alignment */
+        button.custom-file-upload {
+            margin: 13px auto 0; /* Center the button and add some top margin */
+        }
+    </style>
 </head>
 <body>
+    {% include 'header.html' %}
+    {% if messages %}
+        <div class="alert alert-success" role="alert">
+            {% for message in messages %}
+                {{ message }}
+            {% endfor %}
+            <span class="close" onclick="this.parentElement.style.display='none';">&times;</span>
+        </div>
+    {% endif %}
     <div class="file-input-container">
         <div class="cards">
             <form method="post" enctype="multipart/form-data" action="get_qa_model">
-               {% csrf_token %}
-                <input type="file" id="file-input" name="filePath">
+                {% csrf_token %}
+                <label for="file-input" class="file-input-wrapper">
+                    <span id="file-name">Select File</span>
+                    <input type="file" id="file-input" name="filePath" onchange="updateFileName(this)">
+                </label>
                 <br>
-                <input type="submit" class="fas fa-upload" value="Submit" style="background-color: white; color: black;border: #21a16c; text-align: center;">
+                <button type="submit" class="custom-file-upload">
+                    <i class="fas fa-upload"></i> Upload
+                </button>
+                <script>
+                    function updateFileName(input) {
+                        var fileName = input.files[0].name;
+                        document.getElementById('file-name').textContent = fileName;
+                    }           
+                </script>
             </form>
         </div>
     </div>
+    {% include 'footer.html' %}
 </body>
 </html>
