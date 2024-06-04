@@ -1,9 +1,11 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
     {% load static %}
+    <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
     <script nomodule src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.js"></script>
     <link rel="stylesheet" href="https://demos.creative-tim.com/notus-js/assets/styles/tailwind.css">
@@ -263,13 +265,45 @@
             color: #3498db;
         }
 
+        #language-selector {
+            width: 200px;
+            padding: 10px;
+            font-size: 16px;
+            color: #333;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            -webkit-appearance: none;  /* For Chrome */
+            -moz-appearance: none;     /* For Firefox */
+            appearance: none;          /* For modern browsers */
+            {% comment %} background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); {% endcomment %}
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            cursor: pointer;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            transform: translateY(7px); /* Slide down by 2 pixels */
+        }
+        
+        #language-selector:focus {
+            border-color: #66afe9;
+            box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+            outline: none;
+        }
     </style>
 </head>
 <body>
     {% include 'header.html' %}
     <div class="container">
         <div class="title">{{organization.name}}</div>
-        <h3>{{impact}}</h3>
+        <h3 id="impact-text">{{impact}}</h3>
+        <select id="language-selector">
+            <option value="eng">English</option>
+            <option value="cat">Catalan</option>
+            <option value="spa">Spanish</option>
+            <option value="gl">Galacian</option>
+            <!-- Add more languages as needed -->
+        </select>
         {% if request.user.is_superuser %}
         <div class="add-project">
             <a href="/add/{{organization.id}}" class="add-project-link" >
@@ -277,7 +311,7 @@
                 <img src="https://cdn-icons-png.flaticon.com/512/6711/6711415.png" alt="Add Project Icon">
                 Add Project
             </button>
-        </a>
+            </a>
         </div>
         {% endif %}
         <select class="filter-dropdown">
@@ -286,8 +320,6 @@
             <option value="{{ i.title }}">{{ i.title }}</option>
             {% endfor %}
         </select>
-
-
 
         <div class="card-grid">
             {% for content in projects %}
@@ -309,88 +341,76 @@
         </div>
     </div>
 {% include 'footer.html' %}
-</body>
 <script>
-    /* const filterDropdown = document.querySelector('.filter-dropdown');
-    const cards = document.querySelectorAll('.card');
-    const modals = document.querySelectorAll('.modal');
-    const closeButtons = document.querySelectorAll('.close-button');
+    $(document).ready(function() {
+        const filterDropdown = document.querySelector('.filter-dropdown');
+        const cards = document.querySelectorAll('.card');
+        const modals = document.querySelectorAll('.modal');
+        const closeButtons = document.querySelectorAll('.close-button');
+        const expandButtons = document.querySelectorAll('.expand-button');
 
-    filterDropdown.addEventListener('change', () => {
-        const selectedValue = filterDropdown.value;
+        filterDropdown.addEventListener('change', () => {
+            const selectedValue = filterDropdown.value.replace(/\s+/g, '-');
+            console.log('Selected Value:', selectedValue);
+
+            cards.forEach((card) => {
+                const cardClassList = card.className.replace(/\s+/g, '-');
+                console.log('Card Class List:', cardClassList);
+
+                if (selectedValue === 'all' || cardClassList.includes(selectedValue)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        expandButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                const expandedContent = modals[index].querySelector('.expanded-content');
+                const cardContent = cards[index].querySelector('.card-content').innerHTML;
+                const additionalContent = cards[index].querySelector('.additional-content').innerHTML;
+                const selectedLanguage = $('#language-selector').val();
+                translateText(additionalContent, selectedLanguage, '.expanded-content');
+                expandedContent.innerHTML = cardContent + additionalContent;
+                modals[index].style.display = 'block';
+            });
+        });
+
+        closeButtons.forEach((button, index) => {
+            button.addEventListener('click', () => {
+                modals[index].style.display = 'none';
+            });
+        });
+
+        $('#language-selector').change(function() {
+            const selectedLanguage = $(this).val();
+            const textToTranslate = $('#impact-text').text();
+            
+            translateText(textToTranslate, selectedLanguage, '#impact-text');
+            });
+        });
         
-        console.log('Selected Value:', selectedValue);
-    
-        cards.forEach((card) => {
-            const cardClassNames = card.className.split(' '); // Split class names into an array
-            console.log('Card Class Names:', cardClassNames);
-            
-            if (selectedValue === 'all' || cardClassNames.includes(selectedValue)) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
+    function translateText(text, targetLanguage, elementSelector) {
+        const url = `https://www.apertium.org/apy/translate`;
+        const data = {
+            q: text,
+            langpair: `en|${targetLanguage}`
+        };
+
+        $.ajax({
+            url: url,
+            type: 'GET',
+            data: data,
+            success: function(response) {
+                const translatedText = response.responseData.translatedText;
+                $(elementSelector).text(translatedText);
+            },
+            error: function(error) {
+                console.error('Error:', error);
             }
         });
-    });
-    
-
-    const expandButtons = document.querySelectorAll('.expand-button');
-
-    expandButtons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            const expandedContent = modals[index].querySelector('.expanded-content');
-            const cardContent = cards[index].querySelector('.card-content').innerHTML;
-            const additionalContent = cards[index].querySelector('.additional-content').innerHTML;
-            expandedContent.innerHTML = cardContent + additionalContent;
-            modals[index].style.display = 'block';
-        });
-    });
-
-    closeButtons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            modals[index].style.display = 'none';
-        });
-    }); */
-    const filterDropdown = document.querySelector('.filter-dropdown');
-    const cards = document.querySelectorAll('.card');
-    const modals = document.querySelectorAll('.modal');
-    const closeButtons = document.querySelectorAll('.close-button');
-
-    filterDropdown.addEventListener('change', () => {
-        const selectedValue = filterDropdown.value.replace(/\s+/g, '-');;
-
-        console.log('Selected Value:', selectedValue);
-
-        cards.forEach((card) => {
-            const cardClassList = card.className.replace(/\s+/g, '-');;
-            //cardClassList.remove(cardClassList[0]);
-            console.log('Card Class List:', cardClassList);
-            
-            if (selectedValue === 'all' || cardClassList.includes(selectedValue)) {
-                card.style.display = 'flex';
-            } else {
-                card.style.display = 'none';
-            }
-        });
-    });
-
-    const expandButtons = document.querySelectorAll('.expand-button');
-
-    expandButtons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            const expandedContent = modals[index].querySelector('.expanded-content');
-            const cardContent = cards[index].querySelector('.card-content').innerHTML;
-            const additionalContent = cards[index].querySelector('.additional-content').innerHTML;
-            expandedContent.innerHTML = cardContent + additionalContent;
-            modals[index].style.display = 'block';
-        });
-    });
-
-    closeButtons.forEach((button, index) => {
-        button.addEventListener('click', () => {
-            modals[index].style.display = 'none';
-        });
-    });
-
+    }
 </script>
+</body>
 </html>
