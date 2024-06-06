@@ -1,6 +1,7 @@
 from django.contrib import admin
 from django.urls import path,include
 from Visualization import views
+
 urlpatterns = [
     path("adminpage",views.adminpage,name="adminpage"),
     path("",views.homepage,name="homepage"),
@@ -11,4 +12,6 @@ urlpatterns = [
     path('get_qa_model', views.get_qa_model, name='get_qa_model'),
     path("upload",views.upload, name="upload"),
     path("add/<int:id>",views.add),
+    path("search", views.search_view, name='search'),
+    path("project/<int:id>/", views.ProjectDetailView.as_view(), name='project_detail')
 ]

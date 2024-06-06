@@ -1,4 +1,4 @@
-from django.shortcuts import render,redirect
+from django.shortcuts import render,redirect, get_object_or_404
 from .url_retriever import impact,calculator,clean_with_llm
 from .retrievalqna import chat,ingest,ingest_documents,fill_db
 # Create your views here.
@@ -8,6 +8,9 @@ from .models import Organization,Project
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
+from .utils import text_search
+from .utilss import text_search_char
+from django.views import View
 
 
 register = template.Library()
@@ -115,3 +118,19 @@ def get_qa_model(request):
 
 def upload(request):
     return render(request,"upload_pdf.html")
+
+def search_view(request):
+    query=request.GET.get('q','')
+    if query:
+        # results=text_search(query)
+        results=text_search_char(query)
+        results=[{'title':project.title, 'description':project.description, 'id':project_id, 'score':score} for project, score, project_id in results] #'score':score
+    else:
+        results=[]
+
+    return JsonResponse({'results':results})
+
+class ProjectDetailView(View):
+    def get(self, request, id):
+        project=get_object_or_404(Project, id=id)
+        return render(request, 'project_detail.html', {'project':project})

@@ -24,5 +24,7 @@ class Project(models.Model):
     # impact=models.TextField(blank=True, null=True)
     def __str__(self):
         return self.title
+    def combined_fields(self):
+        return f"{self.title}{self.description}{self.organization}{self.tech_stack}{self.domain}{self.subdomain}"
 
 
