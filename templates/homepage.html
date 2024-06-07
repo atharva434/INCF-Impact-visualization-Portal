@@ -471,7 +471,7 @@
                                 resultsContainer.empty();
                                 if (data.results.length > 0) {
                                     data.results.forEach(function(result) {
-                                        resultsContainer.append('<div class="result-item"><h2 class="project-title" data-id="' + result.id + '">' + result.title + '</h2><p>' + result.description + '</p><p>Id: ' + result.id + '</p><p>Score: ' + result.score.toFixed(2) + '</p></div>');
+                                        resultsContainer.append('<div class="result-item"><h2 class="project-title" data-id="' + result.id + '">' + result.title + '</h2><p>' + result.description + '</p></div>');
                                     });
 
                                     $('.project-title').on('click', function(){
