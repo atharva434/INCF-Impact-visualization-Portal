@@ -4,7 +4,15 @@
             <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo" style="background-image: none;">
         </a>
     </div>
-    
+
+    {% if request.path == '/' %}
+    <div class="search-container">
+        <input type="text" class="search-bar" placeholder="Search...">
+        <span class="search-icon">🔍</span>
+        <div class="search-results"></div>
+    </div>
+    {% endif %}
+
     <ul class="nav-links">
         {% if user.is_authenticated %}
         <li><a href="#">Log Out</a></li> 
@@ -20,3 +28,21 @@
         <li><a href="{% url "chatbot" %}">Chatbot</a></li>
     </ul>
 </nav>
+<script>
+    document.addEventListener('DOMContentLoaded', () => {
+        const searchBar = document.querySelector('.search-bar');
+        const searchIcon = document.querySelector('.search-icon');
+    
+        searchIcon.addEventListener('click', () => {
+            searchBar.focus();
+        });
+    
+        searchBar.addEventListener('focus', () => {
+            searchBar.classList.add('expand');
+        });
+    
+        searchBar.addEventListener('blur', () => {
+            searchBar.classList.remove('expand');
+        });
+    });
+</script>

@@ -370,13 +370,80 @@
     margin-top: 10px;
     font-size: 16px;
     opacity: 0.8;
-}
+    }
     footer {
         width: 100%;
         position: relative;
-        bottom: 0;
+        bottom: -25px;
+    }
+    .search-container {
+        position: relative;
+        display: inline-flex;
+        align-items: center;
+    }
+    
+    .search-bar {
+        width: 40px; /* Initial width */
+        padding: 10px;
+        border: 2px solid #ccc;
+        border-radius: 25px;
+        transition: width 0.4s ease-in-out;
+        outline: none;
+        margin-right: -32px; /* Adjust to make space for the icon */
+        z-index: 1; /* Ensure the icon is on top */
+    }
+    
+    .search-icon {
+        position: absolute;
+        right: -23px;
+        cursor: pointer;
+        z-index: 2;
+    }
+    
+    .search-bar:focus {
+        width: 500px; /* Expanded width */
+        border-color: #007BFF;
+    }
+    .search-bar::placeholder {
+        color: transparent; /* Hide the placeholder initially */
+        transition: color 0.4s;
+    }
+    .search-bar.expand::placeholder {
+        color: #999; /* Show the placeholder when expanded */
+    }
+    .search-results {
+        position: absolute;
+        top: 100%;
+        left: 20px;
+        right: 0;
+        background: #fff;
+        border: 1px solid #ccc;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        max-height: 200px;
+        overflow-y: auto;
+        z-index: 1000;
+    }
+
+    .result-item {
+        padding: 10px;
+        border-bottom: 1px solid #eee;
+    }
+
+    .result-item h2 {
+        margin: 0;
+        font-size: 16px;
+    }
+
+    .result-item p {
+        margin: 5px 0 0;
+        font-size: 14px;
+        color: #666;
+    }
+    .project-title {
+        cursor: pointer;
     }
     </style>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
         <!-- Navigation Bar -->
@@ -391,7 +458,44 @@
             </ul>
         </nav> {% endcomment %}
         {% include 'header.html' %}
+        <script>
+            $(document).ready(function(){
+                $('.search-bar').on('input', function() {
+                    let query = $(this).val();
+                    if (query.length > 0) {
+                        $.ajax({
+                            url: '{% url "search" %}',
+                            data: {'q': query},
+                            success: function(data) {
+                                let resultsContainer = $('.search-results');
+                                resultsContainer.empty();
+                                if (data.results.length > 0) {
+                                    data.results.forEach(function(result) {
+                                        resultsContainer.append('<div class="result-item"><h2 class="project-title" data-id="' + result.id + '">' + result.title + '</h2><p>' + result.description + '</p></div>');
+                                    });
+
+                                    $('.project-title').on('click', function(){
+                                        let projectId=$(this).data('id');
+                                        window.location.href='/project/'+projectId+'/';
+                                    });
+                                } else {
+                                    resultsContainer.append('<div class="result-item"><p>No results found</p></div>');
+                                }
+                            }
+                        });
+                    } else {
+                        $('.search-results').empty();
+                    }
+                });
     
+                // Hide results when clicking outside
+                $(document).on('click', function(event) {
+                    if (!$(event.target).closest('.search-container').length) {
+                        $('.search-results').empty();
+                    }
+                });
+            });
+        </script>
         <!-- Slideshow container -->
         <div class="slideshow-container">
             <div class="mySlides fade">

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ project.title }}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f5f9;
+            margin: 0;
+        }
+        
+        /* Navigation Bar */
+        nav {
+            background-color: #336699;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+        
+        .logo img {
+            max-height: 50px;
+        }
+        
+        .nav-links {
+            list-style-type: none;
+        }
+        
+        .nav-links li {
+            display: inline;
+            margin-right: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #ff9900;
+        }
+        footer {
+            background-color: #336699;
+            color: #ffffff;
+            text-align: center;
+            padding: 3px 0;
+            position: relative;
+            left: 0;
+            bottom: -20px;
+            width: 100%;
+        }
+        main {
+            padding: 2em;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            bottom: -10px;
+        }
+        
+        .project-details h1 {
+            font-size: 2em;
+            margin-bottom: 0.5em;
+            color: #336699;
+        }
+        
+        .project-details p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 1em;
+        }
+        
+        .project-details p strong {
+            color: #555;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 1em;
+            padding: 0.5em 1em;
+            background-color: #336699;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background-color: #0056b3;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <main class="project-details">
+        <h1>{{ project.title }}</h1>
+        <p>Description: {{ project.description }}</p>
+        <p>Organization: <span style="color: #336699; text-transform: uppercase;">{{ project.organization }}</span></p>
+        <p>Tech Stack: {{ project.tech_stack }}</p>
+        <p>Domain: {{ project.domain }}</p>
+        <p>Subdomain: {{ project.subdomain }}</p>
+        <a class="back-link" href="{% url 'homepage' %}">Back to Home</a>
+    </main>
+    {% include 'footer.html' %}
+</body>
+</html>
