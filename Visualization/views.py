@@ -8,8 +8,8 @@ from .models import Organization,Project
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
-from .utils import text_search
-from .utilss import text_search_char
+from .wordlev_search import text_search
+from .charlev_search import text_search_char
 from django.views import View
 
 
