@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>World Map</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            margin: 0px;
+            font-family: Arial, sans-serif;
+            background-color: #f0f5f9;
+        }
+
+        #world-map {
+            width: 100%;
+            height: 775px;
+            background-color: #f0f5f9;
+        }
+
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        #popup h2 {
+            margin-top: 0;
+        }
+
+        #popup .close-btn {
+            cursor: pointer;
+            color: red;
+            float: right;
+            font-size: 17px;
+            margin-top: -7px;
+        }
+
+        #names-list {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        nav {
+            background-color: #336699;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+        
+        .logo img {
+            max-height: 50px;
+        }
+        
+        .nav-links {
+            list-style-type: none;
+        }
+        
+        .nav-links li {
+            display: inline;
+            margin-right: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #ff9900;
+        }
+
+        footer {
+            background-color: #336699;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 0;
+            left: 0;
+            bottom: 0;
+            width: 100%;
+            position: relative;
+            bottom: -25px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <div id="filters">
+        <label for="color-scale">Color Scale:</label>
+        <select id="color-scale">
+            <option value="Plasma">Plasma</option>
+            <option value="Viridis">Viridis</option>
+            <option value="Cividis">Cividis</option>
+            <option value="Rainbow">Rainbow</option>
+            <option value="Jet">Jet</option>
+            <option value="Greys">Greys</option>
+        </select>
+        
+        <label for="country-letter">Country Letter:</label>
+        <input type="text" id="country-letter" maxlength="1" style="text-transform:uppercase;">
+    </div>
+    <div id="world-map"></div>
+    <div id="popup">
+        <span class="close-btn">X</span>
+        <h2>Names</h2>
+        <div id="names-list"></div>
+    </div>
+    <script>
+        $(document).ready(function () {
+            function fetchCountryData(colorScale, countryLetter) {
+                console.log(colorScale, countryLetter);
+                $.ajax({
+                    url: '{% url 'country_collab' %}', // Change this URL to match your Django URL configuration
+                    method: 'GET',
+                    success: function (data) {
+                        var filteredData = data;
+                        if (countryLetter) {
+                            filteredData = data.filter(entry => entry.country.toUpperCase().startsWith(countryLetter.toUpperCase()));
+                        }
+                        plotMap(filteredData, colorScale);
+                    }
+                });
+            }
+
+            function plotMap(countryData, colorScale) {
+                console.log(colorScale);
+                var data = [{
+                    type: 'choropleth',
+                    locations: countryData.map(entry => entry.country),
+                    z: countryData.map(entry => entry.count),
+                    locationmode: 'country names',
+                    colorscale: colorScale,
+                    reversescale: true,
+                    marker: {
+                        line: {
+                            color: '#000',
+                            width: 1
+                        }
+                    },
+                    hoverinfo: 'text',
+                    hovertemplate: '%{location}<br>No. of Collabs: %{z}<extra></extra>'
+                }];
+
+                var layout = {
+                    title: 'INCF Global Collaborations',
+                    paper_bgcolor: '#f0f5f9', 
+                    plot_bgcolor: '#f0f5f9',
+                    geo: {
+                        projection: {
+                            type: 'orthographic'
+                        },
+                        bgcolor: '#f0f5f9', 
+                        hovermode: 'closest',
+                        showcoastlines: true,
+                        coastlinecolor: '#000',
+                    }
+                };
+
+                Plotly.newPlot('world-map', data, layout);
+
+                var worldMap = document.getElementById('world-map');
+                worldMap.on('plotly_click', function(event) {
+                    var country = event.points[0].location;
+                    fetchNamesByCountry(country);
+                });
+            }
+
+            function fetchNamesByCountry(country) {
+                $.ajax({
+                    url: '{% url 'get_names_by_country' 'COUNTRY_PLACEHOLDER' %}'.replace('COUNTRY_PLACEHOLDER', country),
+                    method: 'GET',
+                    success: function (data) {
+                        showPopup(country, data);
+                    }
+                });
+            }
+
+            function showPopup(country, names) {
+                $('#popup h2').text('Orgs/Univs in ' + country);
+                $('#names-list').empty();
+                names.forEach(function(name) {
+                    $('#names-list').append('<p>' + name + '</p>');
+                });
+                $('#popup').show();
+            }
+
+            $('.close-btn').click(function () {
+                $('#popup').hide();
+            });
+
+            $('#color-scale').change(function () {
+                var colorScale = $(this).val();
+                var countryLetter = $('#country-letter').val();
+                fetchCountryData(colorScale, countryLetter);
+            });
+
+            $('#country-letter').on('input', function () {
+                var colorScale = $('#color-scale').val();
+                var countryLetter = $(this).val();
+                fetchCountryData(colorScale, countryLetter);
+            });
+
+            // Fetch data initially and every 30 seconds
+            fetchCountryData('Plasma', '');
+            setInterval(() => {
+                var colorScale = $('#color-scale').val();
+                var countryLetter = $('#country-letter').val();
+                fetchCountryData(colorScale, countryLetter);
+            }, 30000);
+        });
+    </script>
+    {% include 'footer.html' %}
+</body>
+</html>

@@ -27,4 +27,8 @@ class Project(models.Model):
     def combined_fields(self):
         return f"{self.title}{self.description}{self.organization}{self.tech_stack}{self.domain}{self.subdomain}"
 
-
+class Collab(models.Model):
+    name=models.CharField(max_length=200)
+    country=models.CharField(max_length=50)
+    def __str__(self):
+        return self.name

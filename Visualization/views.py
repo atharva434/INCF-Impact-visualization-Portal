@@ -4,13 +4,14 @@ from .retrievalqna import chat,ingest,ingest_documents,fill_db
 # Create your views here.
 from django.contrib import messages
 from django import template
-from .models import Organization,Project
+from .models import Organization,Project,Collab
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from .wordlev_search import text_search
 from .charlev_search import text_search_char
 from django.views import View
+from django.db.models import Count
 
 
 register = template.Library()
@@ -134,3 +135,14 @@ class ProjectDetailView(View):
     def get(self, request, id):
         project=get_object_or_404(Project, id=id)
         return render(request, 'project_detail.html', {'project':project})
+    
+def country_collab(request):
+    country_data=Collab.objects.values('country').annotate(count=Count('name'))
+    return JsonResponse(list(country_data), safe=False)
+
+def world_collab(request):
+    return render(request, "world_collab.html")
+
+def get_names_by_country(request, country):
+    names = Collab.objects.filter(country=country).values_list('name', flat=True)
+    return JsonResponse(list(names), safe=False)
