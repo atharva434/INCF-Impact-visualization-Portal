@@ -113,6 +113,9 @@
         
         <label for="country-letter">Country Letter:</label>
         <input type="text" id="country-letter" maxlength="1" style="text-transform:uppercase;">
+
+        <label for="country-search">Search Country:</label>
+        <input type="text" id="country-search" placeholder="Enter country name">
     </div>
     <div id="world-map"></div>
     <div id="popup">
@@ -122,8 +125,7 @@
     </div>
     <script>
         $(document).ready(function () {
-            function fetchCountryData(colorScale, countryLetter) {
-                console.log(colorScale, countryLetter);
+            function fetchCountryData(colorScale, countryLetter, countrySearch) {
                 $.ajax({
                     url: '{% url 'country_collab' %}', // Change this URL to match your Django URL configuration
                     method: 'GET',
@@ -132,13 +134,15 @@
                         if (countryLetter) {
                             filteredData = data.filter(entry => entry.country.toUpperCase().startsWith(countryLetter.toUpperCase()));
                         }
+                        if (countrySearch) {
+                            filteredData = data.filter(entry => entry.country.toUpperCase() === countrySearch.toUpperCase());
+                        }
                         plotMap(filteredData, colorScale);
                     }
                 });
             }
-
+        
             function plotMap(countryData, colorScale) {
-                console.log(colorScale);
                 var data = [{
                     type: 'choropleth',
                     locations: countryData.map(entry => entry.country),
@@ -155,7 +159,7 @@
                     hoverinfo: 'text',
                     hovertemplate: '%{location}<br>No. of Collabs: %{z}<extra></extra>'
                 }];
-
+        
                 var layout = {
                     title: 'INCF Global Collaborations',
                     paper_bgcolor: '#f0f5f9', 
@@ -170,16 +174,16 @@
                         coastlinecolor: '#000',
                     }
                 };
-
+        
                 Plotly.newPlot('world-map', data, layout);
-
+        
                 var worldMap = document.getElementById('world-map');
                 worldMap.on('plotly_click', function(event) {
                     var country = event.points[0].location;
                     fetchNamesByCountry(country);
                 });
             }
-
+        
             function fetchNamesByCountry(country) {
                 $.ajax({
                     url: '{% url 'get_names_by_country' 'COUNTRY_PLACEHOLDER' %}'.replace('COUNTRY_PLACEHOLDER', country),
@@ -189,7 +193,7 @@
                     }
                 });
             }
-
+        
             function showPopup(country, names) {
                 $('#popup h2').text('Orgs/Univs in ' + country);
                 $('#names-list').empty();
@@ -198,29 +202,39 @@
                 });
                 $('#popup').show();
             }
-
+        
             $('.close-btn').click(function () {
                 $('#popup').hide();
             });
-
+        
             $('#color-scale').change(function () {
                 var colorScale = $(this).val();
                 var countryLetter = $('#country-letter').val();
-                fetchCountryData(colorScale, countryLetter);
+                var countrySearch = $('#country-search').val();
+                fetchCountryData(colorScale, countryLetter, countrySearch);
             });
-
+        
             $('#country-letter').on('input', function () {
                 var colorScale = $('#color-scale').val();
                 var countryLetter = $(this).val();
-                fetchCountryData(colorScale, countryLetter);
+                var countrySearch = $('#country-search').val();
+                fetchCountryData(colorScale, countryLetter, countrySearch);
             });
-
+        
+            $('#country-search').on('input', function () {
+                var colorScale = $('#color-scale').val();
+                var countryLetter = $('#country-letter').val();
+                var countrySearch = $(this).val();
+                fetchCountryData(colorScale, countryLetter, countrySearch);
+            });
+        
             // Fetch data initially and every 30 seconds
-            fetchCountryData('Plasma', '');
+            fetchCountryData('Plasma', '', '');
             setInterval(() => {
                 var colorScale = $('#color-scale').val();
                 var countryLetter = $('#country-letter').val();
-                fetchCountryData(colorScale, countryLetter);
+                var countrySearch = $('#country-search').val();
+                fetchCountryData(colorScale, countryLetter, countrySearch);
             }, 30000);
         });
     </script>
