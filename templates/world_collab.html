@@ -96,11 +96,34 @@
             position: relative;
             bottom: -25px;
         }
+        #filters {
+            display: flex; /* Make elements display horizontally */
+            flex-direction: column; /* Stack elements vertically */
+            gap: 1rem; /* Add space between elements */
+            margin-bottom: 1rem; /* Add some bottom margin */
+            width: 500px; /* Set a desired width for the filter box */
+            margin: 0 auto;
+          }
+          
+          #filters label {
+            display: block; /* Make labels take full width */
+            font-weight: bold; /* Make labels bolder */
+          }
+          
+          #filters select,
+          #filters input[type="text"] {
+            width: 100%; /* Set full width for inputs and select */
+            padding: 0.5rem; /* Add padding for inputs and select */
+            border: 1px solid #ddd; /* Add a thin border */
+            border-radius: 4px; /* Add rounded corners */
+            font-size: 1rem; /* Set font size for inputs and select */
+          }
     </style>
 </head>
 <body>
     {% include 'header.html' %}
     <div id="filters">
+        <br>
         <label for="color-scale">Color Scale:</label>
         <select id="color-scale">
             <option value="Plasma">Plasma</option>
