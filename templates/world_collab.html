@@ -108,6 +108,7 @@
           #filters label {
             display: block; /* Make labels take full width */
             font-weight: bold; /* Make labels bolder */
+            margin-top: 12px;
           }
           
           #filters select,
@@ -118,28 +119,59 @@
             border-radius: 4px; /* Add rounded corners */
             font-size: 1rem; /* Set font size for inputs and select */
           }
+          #filter-header {
+            cursor: pointer;
+            background-color: #f0f0f0;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            text-align: center;
+            font-weight: bold;
+            width: 400px; /* Reduce the width */
+            margin: 0 auto; /* Center align */
+        }
+        
+        #filter-header:hover {
+            background-color: #e0e0e0;
+        }
     </style>
 </head>
 <body>
     {% include 'header.html' %}
-    <div id="filters">
-        <br>
-        <label for="color-scale">Color Scale:</label>
-        <select id="color-scale">
-            <option value="Plasma">Plasma</option>
-            <option value="Viridis">Viridis</option>
-            <option value="Cividis">Cividis</option>
-            <option value="Rainbow">Rainbow</option>
-            <option value="Jet">Jet</option>
-            <option value="Greys">Greys</option>
-        </select>
-        
-        <label for="country-letter">Country Letter:</label>
-        <input type="text" id="country-letter" maxlength="1" style="text-transform:uppercase;">
-
-        <label for="country-search">Search Country:</label>
-        <input type="text" id="country-search" placeholder="Enter country name">
+    <br>
+    <div id="filter-container">
+        <div id="filter-header" onclick="toggleFilters()">Filters &#9660;</div>
+        <div id="filters" style="display:none;">
+            <br>
+            <label for="color-scale">Color Scale:</label>
+            <select id="color-scale">
+                <option value="Plasma">Plasma</option>
+                <option value="Viridis">Viridis</option>
+                <option value="Cividis">Cividis</option>
+                <option value="Rainbow">Rainbow</option>
+                <option value="Jet">Jet</option>
+                <option value="Greys">Greys</option>
+            </select>
+            
+            <label for="country-letter">Country Letter:</label>
+            <input type="text" id="country-letter" maxlength="1" style="text-transform:uppercase;">
+    
+            <label for="country-search">Search Country:</label>
+            <input type="text" id="country-search" placeholder="Enter country name">
+        </div>
     </div>
+    <script>
+        function toggleFilters() {
+            var filters = document.getElementById('filters');
+            if (filters.style.display === "none") {
+                filters.style.display = "block";
+                document.getElementById('filter-header').innerHTML = "Filters &#9650;";
+            } else {
+                filters.style.display = "none";
+                document.getElementById('filter-header').innerHTML = "Filters &#9660;";
+            }
+        }
+    </script>
     <div id="world-map"></div>
     <div id="popup">
         <span class="close-btn">X</span>
