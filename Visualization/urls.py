@@ -13,5 +13,8 @@ urlpatterns = [
     path("upload",views.upload, name="upload"),
     path("add/<int:id>",views.add),
     path("search", views.search_view, name='search'),
-    path("project/<int:id>/", views.ProjectDetailView.as_view(), name='project_detail')
+    path("project/<int:id>/", views.ProjectDetailView.as_view(), name='project_detail'),
+    path("country_collab", views.country_collab, name='country_collab'),
+    path("world_collab", views.world_collab, name='world_collab'),
+    path('get_names_by_country/<str:country>/', views.get_names_by_country, name='get_names_by_country')
 ]
