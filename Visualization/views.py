@@ -4,7 +4,7 @@ from .retrievalqna import chat,ingest,ingest_documents,fill_db
 # Create your views here.
 from django.contrib import messages
 from django import template
-from .models import Organization,Project,Collab
+from .models import Organization,Project,Collab,Publication
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -146,3 +146,15 @@ def world_collab(request):
 def get_names_by_country(request, country):
     names = Collab.objects.filter(country=country).values_list('name', flat=True)
     return JsonResponse(list(names), safe=False)
+
+def publication_count(request):
+    data=Publication.objects.values('year').annotate(count=Count('id')).order_by('year')
+    response=list(data)
+    return JsonResponse(response, safe=False)
+
+def all_publications(request):
+    publications = list(Publication.objects.values('title', 'abstract', 'domain', 'year', 'link'))
+    return JsonResponse(publications, safe=False)
+
+def publications(request):
+    return render(request, "publications.html")

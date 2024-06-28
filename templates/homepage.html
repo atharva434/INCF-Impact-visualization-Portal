@@ -422,6 +422,20 @@
         max-height: 200px;
         overflow-y: auto;
         z-index: 1000;
+        display: none;
+    }
+
+    .search-results.visible {
+        display: block; /* Show when it has content */
+    }
+
+    .search-results a {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+        padding: 10px;
+        border: 1px solid #ccc;
+        border-radius: 4px;
     }
 
     .result-item {
@@ -446,20 +460,9 @@
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
-        <!-- Navigation Bar -->
-        {% comment %} <nav>
-            <div class="logo">
-                <img src="https://f1000research.s3.amazonaws.com/thumbnails/ab9f89f4-69be-4a6f-bda8-bcdd2e962a09_collection.thumbnail" alt="Logo" style="background-image: none;">
-            </div>
-            <ul class="nav-links">
-                <li><a href="#">About Us</a></li>
-                <li><a href="adminpage">Admin</a></li>
-                <li><a href="chatbot">Chatbot</a></li>
-            </ul>
-        </nav> {% endcomment %}
         {% include 'header.html' %}
         <script>
-            $(document).ready(function(){
+            $(document).ready(function() {
                 $('.search-bar').on('input', function() {
                     let query = $(this).val();
                     if (query.length > 0) {
@@ -471,27 +474,29 @@
                                 resultsContainer.empty();
                                 if (data.results.length > 0) {
                                     data.results.forEach(function(result) {
-                                        resultsContainer.append('<div class="result-item"><h2 class="project-title" data-id="' + result.id + '">' + result.title + '</h2><p>' + result.description + '</p></div>');
+                                        resultsContainer.append(
+                                            '<a href="/project/' + result.id + '/" class="result-item">' +
+                                            '<h2 class="project-title">' + result.title + '</h2>' +
+                                            '<p>' + result.description + '</p>' +
+                                            '</a>'
+                                        );
                                     });
-
-                                    $('.project-title').on('click', function(){
-                                        let projectId=$(this).data('id');
-                                        window.location.href='/project/'+projectId+'/';
-                                    });
+                                    resultsContainer.addClass('visible');
                                 } else {
                                     resultsContainer.append('<div class="result-item"><p>No results found</p></div>');
+                                    resultsContainer.addClass('visible');
                                 }
                             }
                         });
                     } else {
-                        $('.search-results').empty();
+                        $('.search-results').empty().removeClass('visible');
                     }
                 });
-    
+            
                 // Hide results when clicking outside
                 $(document).on('click', function(event) {
                     if (!$(event.target).closest('.search-container').length) {
-                        $('.search-results').empty();
+                        $('.search-results').empty().removeClass('visible');
                     }
                 });
             });

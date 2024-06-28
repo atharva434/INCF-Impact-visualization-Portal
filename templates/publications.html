@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Publications Data</title>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <style>
+        body, ul, li, p {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f5f9;
+        }
+        
+        /* Navigation Bar */
+        nav {
+            background-color: #336699;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+        
+        .logo img {
+            max-height: 50px;
+        }
+        
+        .nav-links {
+            list-style-type: none;
+        }
+        
+        .nav-links li {
+            display: inline;
+            margin-right: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #ff9900;
+        }
+        footer {
+            background-color: #336699;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 0;
+            position: relative;
+            left: 0;
+            bottom: -17px;
+            width: 100%;
+        }
+        #publication-graph, #domain-pie-chart{
+            width: 90%;
+            margin: 0 auto;
+        }
+        #domain-pie-chart{
+            height: 550px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <br>
+    <div id="publication-graph"></div>
+    <div id="domain-pie-chart"></div>
+
+    <script>
+        function fetchAllPublications() {
+            $.ajax({
+                url: "{% url 'all_publications' %}",
+                method: "GET",
+                success: function(data) {
+                    // Process year-wise publication counts
+                    var yearCounts = {};
+                    var domainCounts = {};
+
+                    data.forEach(function(pub) {
+                        // Process year counts
+                        if (yearCounts[pub.year]) {
+                            yearCounts[pub.year]++;
+                        } else {
+                            yearCounts[pub.year] = 1;
+                        }
+
+                        // Process domain counts
+                        if (pub.domain) {
+                            var keywords = pub.domain.split(',').map(function(keyword) {
+                                return keyword.trim();
+                            });
+                            keywords.forEach(function(keyword) {
+                                if (domainCounts[keyword]) {
+                                    domainCounts[keyword]++;
+                                } else {
+                                    domainCounts[keyword] = 1;
+                                }
+                            });
+                        }
+                    });
+
+                    // Prepare data for year-wise publication count plot
+                    var years = Object.keys(yearCounts).sort();
+                    var counts = years.map(function(year) {
+                        return yearCounts[year];
+                    });
+
+                    var hoverText = years.map(function(year, index) {
+                        return `No. of Publications: ${counts[index]}<br>Year: ${year}`;
+                    });
+
+                    var yearPlotData = [{
+                        x: years,
+                        y: counts,
+                        type: 'scatter',
+                        mode: 'lines+markers',
+                        marker: { size: 8 },
+                        text: hoverText,
+                        hoverinfo: 'text'
+                    }];
+
+                    var yearLayout = {
+                        title: 'Publication Trend Over Years',
+                        xaxis: {
+                            title: 'Year',
+                            rangeslider: {},
+                            autorange: true
+                        },
+                        yaxis: {
+                            title: 'Number of Publications'
+                        },
+                        hovermode: 'closest',
+                        updatemenus: [{
+                            buttons: [{
+                                args: [{'yaxis.type': 'linear'}],
+                                label: 'Linear Scale',
+                                method: 'relayout'
+                            }, {
+                                args: [{'yaxis.type': 'log'}],
+                                label: 'Log Scale',
+                                method: 'relayout'
+                            }],
+                            direction: 'down',
+                            showactive: true,
+                            type: 'dropdown'
+                        }],
+                        annotations: [{
+                            x: years[years.length - 1],
+                            y: counts[counts.length - 1],
+                            xref: 'x',
+                            yref: 'y',
+                            text: 'Latest Data',
+                            showarrow: true,
+                            arrowhead: 7,
+                            ax: 0,
+                            ay: -40
+                        }]
+                    };
+
+                    Plotly.newPlot('publication-graph', yearPlotData, yearLayout);
+
+                    // Prepare data for domain keyword count pie chart
+                    var keywords = Object.keys(domainCounts);
+                    var keywordCounts = keywords.map(function(keyword) {
+                        return domainCounts[keyword];
+                    });
+
+                    var piePlotData = [{
+                        labels: keywords,
+                        values: keywordCounts,
+                        type: 'pie',
+                        hoverinfo: 'label+value',
+                    }];
+
+                    var pieLayout = {
+                        title: 'Publication Domains Distribution',
+                        showlegend: true,
+                        legend: {
+                            x: 1,
+                            y: 0.5
+                        },
+                        margin: {
+                            l: 50,
+                            r: 50,
+                            b: 50,
+                            t: 50,
+                            pad: 4
+                        }
+                    };
+
+                    Plotly.newPlot('domain-pie-chart', piePlotData, pieLayout);
+                },
+                error: function(xhr, status, error) {
+                    console.error("Error fetching data:", error);
+                }
+            });
+        }
+
+        // Fetch data initially
+        fetchAllPublications();
+
+        // Set up periodic data fetching
+        setInterval(fetchAllPublications, 30000); // Update every 30 seconds
+    </script>
+    {% include 'footer.html' %}
+</body>
+</html>
