@@ -23,4 +23,3 @@ def stats_finder(disease):
     "api_key": COHERE_API_KEY
     }
     return search(params)
-
