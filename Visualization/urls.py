@@ -9,12 +9,15 @@ urlpatterns = [
     path("org",views.organization),
     path("detail/<int:id>",views.detail),
     path("chatbot",views.chatbot, name="chatbot"),
-    path('get_qa_model', views.get_qa_model, name='get_qa_model'),
+    path("get_qa_model", views.get_qa_model, name='get_qa_model'),
     path("upload",views.upload, name="upload"),
     path("add/<int:id>",views.add),
     path("search", views.search_view, name='search'),
     path("project/<int:id>/", views.ProjectDetailView.as_view(), name='project_detail'),
     path("country_collab", views.country_collab, name='country_collab'),
     path("world_collab", views.world_collab, name='world_collab'),
-    path('get_names_by_country/<str:country>/', views.get_names_by_country, name='get_names_by_country')
+    path("get_names_by_country/<str:country>/", views.get_names_by_country, name='get_names_by_country'),
+    # path("publication_counts/", views.publication_count, name='publication_counts'),
+    path('all_publications/', views.all_publications, name='all_publications'),
+    path("publications", views.publications, name='publications')
 ]
