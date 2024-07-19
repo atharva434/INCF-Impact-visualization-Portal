@@ -474,10 +474,11 @@
                                 resultsContainer.empty();
                                 if (data.results.length > 0) {
                                     data.results.forEach(function(result) {
+                                        let aboutText = result.about.length > 700 ? result.about.substring(0, 700) + '...' : result.about;
                                         resultsContainer.append(
-                                            '<a href="/project/' + result.id + '/" class="result-item">' +
+                                            '<a href="/fproject/' + result.id + '/" class="result-item">' +
                                             '<h2 class="project-title">' + result.title + '</h2>' +
-                                            '<p>' + result.description + '</p>' +
+                                            '<p>' + aboutText + '</p>' +
                                             '</a>'
                                         );
                                     });

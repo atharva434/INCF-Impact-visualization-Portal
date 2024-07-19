@@ -1,11 +1,11 @@
 import numpy as np
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from .models import Project
+from .models import FProject
 
 def text_search(query):
     # Fetch all projects
-    projects = Project.objects.all()
+    projects = FProject.objects.all()
     
     # Combine the fields of each project into a single string
     documents = [project.combined_fields() for project in projects]
@@ -28,6 +28,6 @@ def text_search(query):
     ranked_scores = scores[ranked_indices]
     
     # Create a list of tuples (project, similarity_score)
-    ranked_projects = [(projects[int(i)], ranked_scores[idx]) for idx, i in enumerate(ranked_indices[:3])]
+    ranked_projects = [(projects[int(i)], ranked_scores[idx], projects[int(i)].id) for idx, i in enumerate(ranked_indices[:4])]
     
     return ranked_projects

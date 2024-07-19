@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ fproject.title }}</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f5f9;
+            margin: 0;
+        }
+        
+        /* Navigation Bar */
+        nav {
+            background-color: #336699;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+        
+        .logo img {
+            max-height: 50px;
+        }
+        
+        .nav-links {
+            list-style-type: none;
+        }
+        
+        .nav-links li {
+            display: inline;
+            margin-right: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #ff9900;
+        }
+        footer {
+            background-color: #336699;
+            color: #ffffff;
+            text-align: center;
+            padding: 3px 0;
+            position: relative;
+            left: 0;
+            bottom: -20px;
+            width: 100%;
+        }
+        main {
+            padding: 2em;
+            max-width: 800px;
+            margin: 0 auto;
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            position: relative;
+            bottom: -10px;
+        }
+        
+        .publication-details h1 {
+            font-size: 2em;
+            margin-bottom: 0.5em;
+            color: #336699;
+        }
+        
+        .publication-details p {
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 1em;
+        }
+        
+        .publication-details p strong {
+            color: #555;
+        }
+        
+        .back-link {
+            display: inline-block;
+            margin-top: 1em;
+            padding: 0.5em 1em;
+            background-color: #336699;
+            color: white;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        
+        .back-link:hover {
+            background-color: #0056b3;
+        }
+        #language-selector {
+            width: 200px;
+            padding: 10px;
+            font-size: 16px;
+            color: #333;
+            background-color: #f9f9f9;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            -webkit-appearance: none;  /* For Chrome */
+            -moz-appearance: none;     /* For Firefox */
+            appearance: none;          /* For modern browsers */
+            {% comment %} background-image: url('data:image/svg+xml;utf8,<svg fill="%23333" height="24" viewBox="0 0 24 24" width="24" xmlns="http://www.w3.org/2000/svg"><path d="M7 10l5 5 5-5z"/></svg>'); {% endcomment %}
+            background-repeat: no-repeat;
+            background-position: right 10px center;
+            background-size: 12px;
+            cursor: pointer;
+            transition: border-color 0.3s, box-shadow 0.3s;
+            transform: translateY(7px); /* Slide down by 2 pixels */
+        }
+        
+        #language-selector:focus {
+            border-color: #66afe9;
+            box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
+            outline: none;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <main class="publication-details">
+        <select id="language-selector">
+            <option value="eng">English</option>
+            <option value="cat">Catalan</option>
+            <option value="spa">Spanish</option>
+            <option value="gl">Galacian</option>
+            <!-- Add more languages as needed -->
+        </select>
+        <h1 id="publication-title">{{ publication.title }}</h1>
+        <p>Domain: <span style="color: #336699; text-transform: uppercase;">{{ publication.domain }}</span></p>
+        <p id="publication-abstract">Abstract: {{ publication.abstract }}</p>
+        <p>Link to Read More: <a href="{{ publication.link }}" target="_blank">{{ publication.link }}</a></p>
+        <p>Year(s): {{ publication.year }}</p>
+        <a class="back-link" href="{% url 'homepage' %}">Back to Home</a>
+    </main>
+    <script>
+        $(document).ready(function() {
+            $('#language-selector').change(function() {
+                const selectedLanguage = $(this).val();
+                const titleToTranslate = $('#publication-title').text();
+                const aboutToTranslate = $('#publication-abstract').text();
+                
+                translateText(titleToTranslate, selectedLanguage, '#publication-title');
+                translateText(aboutToTranslate, selectedLanguage, '#publication-abstract');
+            });
+        });
+        
+        function translateText(text, targetLanguage, elementSelector) {
+            const url = `https://www.apertium.org/apy/translate`;
+            const data = {
+                q: text,
+                langpair: `en|${targetLanguage}`
+            };
+        
+            $.ajax({
+                url: url,
+                type: 'GET',
+                data: data,
+                success: function(response) {
+                    const translatedText = response.responseData.translatedText;
+                    $(elementSelector).text(translatedText);
+                },
+                error: function(error) {
+                    console.error('Error:', error);
+                }
+            });
+        }
+    </script>
+    {% include 'footer.html' %}
+</body>
+</html>
