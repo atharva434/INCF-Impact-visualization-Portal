@@ -2,7 +2,7 @@ import numpy as np
 from collections import Counter
 from sklearn.feature_extraction.text import TfidfVectorizer
 from sklearn.metrics.pairwise import cosine_similarity
-from .models import Project
+from .models import Project,FProject
 
 def char_n_gram(text, n):
     """
@@ -38,7 +38,7 @@ def text_search_char(query):
     """
 
     # Fetch all projects
-    projects = Project.objects.all()
+    projects = FProject.objects.all()
     
     # Combine the fields of each project into a single string
     documents = [project.combined_fields() for project in projects]
@@ -55,4 +55,4 @@ def text_search_char(query):
     ranked_documents.sort(key=lambda x: x[1], reverse=True)
 
     # Return top 3 results
-    return ranked_documents[:3]
+    return ranked_documents[:4]

@@ -4,7 +4,7 @@ from .retrievalqna import chat,ingest,ingest_documents,fill_db
 # Create your views here.
 from django.contrib import messages
 from django import template
-from .models import Organization,Project,Collab,Publication
+from .models import Organization,Project,Collab,Publication,FProject
 from django.core.files.storage import FileSystemStorage
 from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
@@ -123,18 +123,24 @@ def upload(request):
 def search_view(request):
     query=request.GET.get('q','')
     if query:
-        # results=text_search(query)
-        results=text_search_char(query)
-        results=[{'title':project.title, 'description':project.description, 'id':project_id, 'score':score} for project, score, project_id in results] #'score':score
+        results=text_search(query)
+        # results=text_search_char(query)
+        # results=[{'title':project.title, 'about':project.about, 'id':project_id, 'score':score} for project, score, project_id in results] 
+        results=[{'title':project.title, 'about':project.about, 'id':id, 'score':score} for project, score, id in results] #'score':score
     else:
         results=[]
 
     return JsonResponse({'results':results})
 
-class ProjectDetailView(View):
+# class ProjectDetailView(View):
+#     def get(self, request, id):
+#         project=get_object_or_404(Project, id=id)
+#         return render(request, 'project_detail.html', {'project':project})
+
+class FProjectDetailView(View):
     def get(self, request, id):
-        project=get_object_or_404(Project, id=id)
-        return render(request, 'project_detail.html', {'project':project})
+        fproject=get_object_or_404(FProject, id=id)
+        return render(request, 'fproject_detail.html', {'fproject':fproject})
     
 def country_collab(request):
     country_data=Collab.objects.values('country').annotate(count=Count('name'))
@@ -153,8 +159,21 @@ def publication_count(request):
     return JsonResponse(response, safe=False)
 
 def all_publications(request):
-    publications = list(Publication.objects.values('title', 'abstract', 'domain', 'year', 'link'))
+    publications = list(Publication.objects.values('id', 'title', 'abstract', 'domain', 'year', 'link'))
     return JsonResponse(publications, safe=False)
 
 def publications(request):
     return render(request, "publications.html")
+
+def get_fprojects_data(request):
+    projects = FProject.objects.all().values('id', 'title', 'tags', 'status', 'contributors', 'mentors', 'about', 'year')
+    projects_list = list(projects)
+    return JsonResponse(projects_list, safe=False)
+
+def viz_fprojects(request):
+    return render(request, "viz_fprojects.html")
+
+class PublicationDetailView(View):
+    def get(self, request, id):
+        publication=get_object_or_404(Publication, id=id)
+        return render(request, 'publication_detail.html', {'publication':publication})

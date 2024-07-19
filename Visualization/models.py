@@ -39,3 +39,14 @@ class Publication(models.Model):
     domain=models.CharField(max_length=150)
     year=models.IntegerField()
     link=models.URLField(blank=True,null=True)
+
+class FProject(models.Model):
+    title=models.CharField(max_length=200)
+    tags=models.CharField(max_length=200)
+    status=models.CharField(max_length=100)
+    contributors=models.CharField(max_length=100, blank=True, null=True)
+    mentors=models.CharField(max_length=150, blank=True, null=True)
+    about=models.TextField(blank=True, null=True)
+    year=models.JSONField(default=True, blank=True)
+    def combined_fields(self):
+        return f"{self.title}{self.tags}{self.status}{self.contributors}{self.mentors}{self.about}"

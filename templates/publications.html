@@ -66,6 +66,57 @@
         #domain-pie-chart{
             height: 550px;
         }
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        #popup h2 {
+            margin-top: 0;
+        }
+
+        #popup .close-btn {
+            cursor: pointer;
+            color: red;
+            float: right;
+            font-size: 17px;
+            margin-top: -7px;
+        }
+
+        #projects-list {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+        .result-item {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s;
+        }
+        
+        .result-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .publication-title {
+            margin: 0;
+            font-size: 16px;
+        }
     </style>
 </head>
 <body>
@@ -73,6 +124,11 @@
     <br>
     <div id="publication-graph"></div>
     <div id="domain-pie-chart"></div>
+    <div id="popup">
+        <span class="close-btn">X</span>
+        <h2>Names</h2>
+        <div id="projects-list"></div>
+    </div>
 
     <script>
         function fetchAllPublications() {
@@ -99,9 +155,19 @@
                             });
                             keywords.forEach(function(keyword) {
                                 if (domainCounts[keyword]) {
-                                    domainCounts[keyword]++;
+                                    domainCounts[keyword].count++;
+                                    domainCounts[keyword].pubs.push({
+                                        id: pub.id,
+                                        title: pub.title
+                                    });
                                 } else {
-                                    domainCounts[keyword] = 1;
+                                    domainCounts[keyword] = {
+                                        count: 1,
+                                        pubs: [{
+                                            id: pub.id,
+                                            title: pub.title
+                                        }]
+                                    };
                                 }
                             });
                         }
@@ -170,7 +236,7 @@
                     // Prepare data for domain keyword count pie chart
                     var keywords = Object.keys(domainCounts);
                     var keywordCounts = keywords.map(function(keyword) {
-                        return domainCounts[keyword];
+                        return domainCounts[keyword].count;
                     });
 
                     var piePlotData = [{
@@ -178,6 +244,9 @@
                         values: keywordCounts,
                         type: 'pie',
                         hoverinfo: 'label+value',
+                        customdata: keywords.map(function(keyword) {
+                            return domainCounts[keyword].pubs;
+                        })
                     }];
 
                     var pieLayout = {
@@ -197,12 +266,47 @@
                     };
 
                     Plotly.newPlot('domain-pie-chart', piePlotData, pieLayout);
+
+                    var domainPieChart = document.getElementById('domain-pie-chart');
+                    if (domainPieChart) {
+                        domainPieChart.on('plotly_click', function(data) {
+                            if (data.points.length > 0) {
+                                var point = data.points[0];
+                                var pubs = point.customdata;
+                                console.log(pubs)
+                                showPopup(point.label, pubs);
+                            }
+                        });
+                    } 
+                    else {
+                        console.error('Element with ID tags-pie-chart not found.');
+                    }
                 },
                 error: function(xhr, status, error) {
                     console.error("Error fetching data:", error);
                 }
             });
         }
+
+        function showPopup(tag, pubs) {
+            $('#popup h2').text('Projects with Tag: ' + tag);
+        
+            // Access the inner array
+            var innerPubs = pubs[0];
+        
+            var pubsHTML = innerPubs.map(function(pub) {
+                return '<a href="/publication/' + pub.id + '/" class="result-item">' +
+                    '<h2 class="publication-title">' + pub.title + '</h2>' +
+                    '</a>';
+            }).join('');
+        
+            $('#projects-list').html(pubsHTML);
+            $('#popup').show();
+        }
+
+        $('.close-btn').click(function () {
+            $('#popup').hide();
+        });
 
         // Fetch data initially
         fetchAllPublications();
