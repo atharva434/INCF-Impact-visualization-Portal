@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Projects Data</title>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body, ul, li, p {
+            margin: 0;
+            padding: 0;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f5f9;
+        }
+        
+        /* Navigation Bar */
+        nav {
+            background-color: #336699;
+            color: #ffffff;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 30px;
+        }
+        
+        .logo img {
+            max-height: 50px;
+        }
+        
+        .nav-links {
+            list-style-type: none;
+        }
+        
+        .nav-links li {
+            display: inline;
+            margin-right: 20px;
+        }
+        
+        .nav-links a {
+            text-decoration: none;
+            color: #ffffff;
+            font-weight: bold;
+            transition: color 0.3s;
+        }
+        
+        .nav-links a:hover {
+            color: #ff9900;
+        }
+        footer {
+            background-color: #336699;
+            color: #ffffff;
+            text-align: center;
+            padding: 15px 0;
+            position: relative;
+            left: 0;
+            bottom: -17px;
+            width: 100%;
+        }
+        #fproject-graph, #tags-pie-chart{
+            width: 90%;
+            margin: 0 auto;
+        }
+        #tags-pie-chart{
+            height: 550px;
+        }
+        #popup {
+            display: none;
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 15px;
+            border: 1px solid #ccc;
+            z-index: 1000;
+            max-width: 80%;
+            max-height: 80%;
+            overflow-y: auto;
+        }
+
+        #popup h2 {
+            margin-top: 0;
+        }
+
+        #popup .close-btn {
+            cursor: pointer;
+            color: red;
+            float: right;
+            font-size: 17px;
+            margin-top: -7px;
+        }
+
+        #projects-list {
+            max-height: 60vh;
+            overflow-y: auto;
+        }
+
+        #network-graph {
+            height: 700px;
+            width: 90%;
+            margin: 0 auto;
+        }
+        .result-item {
+            display: block;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            text-decoration: none;
+            color: #333;
+            transition: background-color 0.3s;
+        }
+        
+        .result-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .project-title {
+            margin: 0;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+    {% include 'header.html' %}
+    <br>
+    <div id="fproject-graph"></div>
+    <div id="tags-pie-chart"></div>
+    <div id="popup">
+        <span class="close-btn">X</span>
+        <h2>Names</h2>
+        <div id="projects-list"></div>
+    </div>
+    <div id="network-graph"></div>
+    <script>
+        function fetchFprojectsAll() {
+            $.ajax({
+                url: "{% url 'get_fprojects_data' %}",
+                method: 'GET',
+                success: function(data) {
+                    // Process year-wise project counts
+                    var yearCounts = {};
+                    var tagCounts = {};
+                    var mentorFrequency = {};
+                    var mentorConnections = {};
+    
+                    data.forEach(function(project) {
+                        var years = JSON.parse(project.year.replace(/'/g, '"'));
+                        years.forEach(function(year) {
+                            if (yearCounts[year]) {
+                                yearCounts[year]++;
+                            } else {
+                                yearCounts[year] = 1;
+                            }
+                        });
+
+                        if (project.mentors) {
+                            var mentors = project.mentors.split(',').map(function(mentor) {
+                                return mentor.trim();
+                            });
+
+                            mentors.forEach(function(mentor) {
+                                if (mentorFrequency[mentor]) {
+                                    mentorFrequency[mentor]++;
+                                } else {
+                                    mentorFrequency[mentor] = 1;
+                                }
+                            });
+
+                            for (var i = 0; i < mentors.length; i++) {
+                                for (var j = i + 1; j < mentors.length; j++) {
+                                    var pair = [mentors[i], mentors[j]].sort().join('-');
+                                    if (mentorConnections[pair]) {
+                                        mentorConnections[pair]++;
+                                    } else {
+                                        mentorConnections[pair] = 1;
+                                    }
+                                }
+                            }
+                        }
+    
+                        if (project.tags) {
+                            var keywords = project.tags.split(',').map(function(keyword) {
+                                return keyword.trim();
+                            });
+                            keywords.forEach(function(keyword) {
+                                if (tagCounts[keyword]) {
+                                    tagCounts[keyword].count++;
+                                    tagCounts[keyword].projects.push({
+                                        id: project.id,
+                                        title: project.title
+                                    });
+                                } else {
+                                    tagCounts[keyword] = {
+                                        count: 1,
+                                        projects: [{
+                                            id: project.id,
+                                            title: project.title
+                                        }]
+                                    };
+                                }
+                            });
+                        }
+                    });
+    
+                    // Prepare data for year-wise project count plot
+                    var years = Object.keys(yearCounts).sort();
+                    var counts = years.map(function(year) {
+                        return yearCounts[year];
+                    });
+    
+                    var hoverText = years.map(function(year, index) {
+                        return `No. of Projects: ${counts[index]}<br>Year: ${year}`;
+                    });
+    
+                    var yearPlotData = [{
+                        x: years,
+                        y: counts,
+                        type: 'scatter',
+                        mode: 'lines+markers',
+                        marker: { size: 8 },
+                        text: hoverText,
+                        hoverinfo: 'text'
+                    }];
+    
+                    var yearLayout = {
+                        title: 'Project Trend Over Years',
+                        xaxis: {
+                            title: 'Year',
+                            rangeslider: {},
+                            autorange: true
+                        },
+                        yaxis: {
+                            title: 'Number of Projects'
+                        },
+                        hovermode: 'closest',
+                        updatemenus: [{
+                            buttons: [{
+                                args: [{'yaxis.type': 'linear'}],
+                                label: 'Linear Scale',
+                                method: 'relayout'
+                            }, {
+                                args: [{'yaxis.type': 'log'}],
+                                label: 'Log Scale',
+                                method: 'relayout'
+                            }],
+                            direction: 'down',
+                            showactive: true,
+                            type: 'dropdown'
+                        }],
+                        annotations: [{
+                            x: years[years.length - 1],
+                            y: counts[counts.length - 1],
+                            xref: 'x',
+                            yref: 'y',
+                            text: 'Latest Data',
+                            showarrow: true,
+                            arrowhead: 7,
+                            ax: 0,
+                            ay: -40
+                        }]
+                    };
+    
+                    Plotly.newPlot('fproject-graph', yearPlotData, yearLayout);
+    
+                    // Prepare data for tag-wise project count plot
+                    var keywords = Object.keys(tagCounts);
+                    var keywordCounts = keywords.map(function(keyword) {
+                        return tagCounts[keyword].count;
+                    });
+    
+                    var piePlotData = [{
+                        labels: keywords,
+                        values: keywordCounts,
+                        type: 'pie',
+                        hoverinfo: 'label+value+percent',
+                        textinfo: 'none',  // This hides the text by default
+                        customdata: keywords.map(function(keyword) {
+                            return tagCounts[keyword].projects;
+                        })
+                    }];
+    
+                    var pieLayout = {
+                        title: 'Project Tag Distribution',
+                        showlegend: true,
+                        legend: {
+                            x: 1,
+                            y: 0.5
+                        },
+                        margin: {
+                            l: 50,
+                            r: 50,
+                            b: 50,
+                            t: 50,
+                            pad: 4
+                        }
+                    };
+    
+                    Plotly.newPlot('tags-pie-chart', piePlotData, pieLayout);
+    
+                    // Handle click events on pie chart slices
+                    var tagsPieChart = document.getElementById('tags-pie-chart');
+                    if (tagsPieChart) {
+                        tagsPieChart.on('plotly_click', function(data) {
+                            if (data.points.length > 0) {
+                                var point = data.points[0];
+                                var projects = point.customdata;
+                                console.log(projects)
+                                showPopup(point.label, projects);
+                            }
+                        });
+                    } 
+                    else {
+                        console.error('Element with ID tags-pie-chart not found.');
+                    }
+
+                    var nodes = Object.keys(mentorFrequency).map(function(mentor) {
+                        return {
+                            id: mentor,
+                            size: mentorFrequency[mentor]
+                        };
+                    });
+
+                    var edges = Object.keys(mentorConnections).map(function(pair) {
+                        var mentors = pair.split('-');
+                        return {
+                            source: mentors[0],
+                            target: mentors[1],
+                            value: mentorConnections[pair]
+                        };
+                    });
+
+                    // Create the network graph using Plotly
+                    createNetworkGraph(nodes, edges);
+    
+                },
+                error: function(error) {
+                    console.error('Error fetching project data:', error);
+                }
+            });
+        }
+    
+        function showPopup(tag, projects) {
+            $('#popup h2').text('Projects with Tag: ' + tag);
+        
+            var innerProjects = projects[0];
+
+            var projectsHTML = innerProjects.map(function(project) {
+                return '<a href="/fproject/' + project.id + '/" class="result-item">' +
+                    '<h2 class="project-title">' + project.title + '</h2>' +
+                    '</a>';
+            }).join('');
+        
+            $('#projects-list').html(projectsHTML);
+            $('#popup').show();
+        }
+
+        function createNetworkGraph(nodes, edges) {
+            var nodeX = [];
+            var nodeY = [];
+            var nodeSize = [];
+            var nodeText = [];
+
+            var nodeIndex = {};
+            nodes.forEach(function(node, index) {
+                nodeX.push(Math.random());
+                nodeY.push(Math.random());
+                nodeSize.push(node.size * 10); // Adjust size scale if necessary
+                nodeText.push(node.id);
+                nodeIndex[node.id] = index;
+            });
+
+            var edgeX = [];
+            var edgeY = [];
+            edges.forEach(function(edge) {
+                var sourceIndex = nodeIndex[edge.source];
+                var targetIndex = nodeIndex[edge.target];
+                edgeX.push(nodeX[sourceIndex], nodeX[targetIndex], null);
+                edgeY.push(nodeY[sourceIndex], nodeY[targetIndex], null);
+            });
+
+            var traceNodes = {
+                type: 'scatter',
+                x: nodeX,
+                y: nodeY,
+                mode: 'markers+text',
+                marker: {
+                    size: nodeSize,
+                    sizemode: 'diameter'
+                },
+                text: nodeText,
+                textposition: 'top center'
+            };
+
+            var traceEdges = {
+                type: 'scatter',
+                x: edgeX,
+                y: edgeY,
+                mode: 'lines',
+                line: {
+                    width: 1,
+                    color: 'rgba(0,0,0,0.5)'
+                }
+            };
+
+            var layout = {
+                showlegend: false,
+                xaxis: { showgrid: false, zeroline: false },
+                yaxis: { showgrid: false, zeroline: false }
+            };
+
+            Plotly.newPlot('network-graph', [traceEdges, traceNodes], layout);
+        }
+    
+        $('.close-btn').click(function () {
+            $('#popup').hide();
+        });
+    
+        fetchFprojectsAll();
+    
+        setInterval(fetchFprojectsAll, 30000);
+    </script>
+    
+    {% include 'footer.html' %}
+</body>
+</html>
