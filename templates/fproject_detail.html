@@ -7,6 +7,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -56,6 +57,36 @@
             left: 0;
             bottom: -20px;
             width: 100%;
+        }
+        .dropdown {
+            position: relative;
+            display: inline-block;
+        }
+        
+        /* Dropdown Content (Hidden by Default) */
+        .dropdown-content {
+            display: none;
+            position: absolute;
+            background-color: #f9f9f9;
+            min-width: 160px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+            z-index: 1;
+        }
+        
+        /* Links inside the dropdown */
+        .dropdown-content a {
+            color: black;
+            padding: 12px 16px;
+            text-decoration: none;
+            display: block;
+        }
+        
+        /* Change color of dropdown links on hover */
+        .dropdown-content a:hover {background-color: #f1f1f1}
+        
+        /* Show the dropdown menu on hover */
+        .dropdown:hover .dropdown-content {
+            display: block;
         }
         main {
             padding: 2em;
@@ -123,6 +154,39 @@
             box-shadow: 0 0 5px rgba(102, 175, 233, 0.6);
             outline: none;
         }
+
+        #person-popup {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border: 1px solid #ccc;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            z-index: 1000;
+            width: 650px;  /* Adjust width to fit the tree */
+            height: 450px; /* Adjust height to fit the tree */
+        }
+    
+        #popup-content {
+            position: relative;
+        }
+    
+        #close-popup {
+            margin-top: 20px;
+            padding: 5px 10px;
+            background-color: #336699;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+    
+        #tree-container {
+            width: 100%;
+            height: 400px;  /* Adjust height to fit the tree */
+            overflow: auto;
+        }
     </style>
 </head>
 <body>
@@ -138,45 +202,357 @@
         <h1 id="project-title">{{ fproject.title }}</h1>
         <p>Tags: <span style="color: #336699; text-transform: uppercase;">{{ fproject.tags }}</span></p>
         <p>Status: {{ fproject.status }}</p>
-        <p>Mentors: {{ fproject.mentors }}</p>
-        <p>Contributors: {{ fproject.contributors }}</p>
+        <p>Mentors: 
+            {% for mentor in mentors %}
+                <a href="#" class="person-link" data-name="{{ mentor.strip }}">{{ mentor.strip }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
+        <p>Contributors: 
+            {% for contributor in contributors %}
+                <a href="#" class="person-link" data-name="{{ contributor.strip }}">{{ contributor.strip }}</a>{% if not forloop.last %}, {% endif %}
+            {% endfor %}
+        </p>
         <p id="project-about">About: {{ fproject.about }}</p>
         <p>Year(s): {{ fproject.year }}</p>
-        <a class="back-link" href="{% url 'homepage' %}">Back to Home</a>
+        <a class="back-link" href="{% url 'fproject_list' %}">Back to List</a>
+        {% comment %} <div id="person-popup" style="display:none;">
+            <div id="popup-content">
+                <h2 id="popup-name"></h2>
+                <p id="popup-senior"></p>
+                <p id="popup-junior"></p>
+                <button id="close-popup">Close</button>
+            </div>
+        </div> {% endcomment %}
+        <div id="person-popup" style="display:none;">
+            <div id="popup-content">
+                <h2 id="popup-name"></h2>
+                <div id="tree-container"></div>
+                <button id="close-popup">Close</button>
+            </div>
+        </div>
     </main>
-    <script>
-        $(document).ready(function() {
-            $('#language-selector').change(function() {
-                const selectedLanguage = $(this).val();
-                const titleToTranslate = $('#project-title').text();
-                const aboutToTranslate = $('#project-about').text();
-                
-                translateText(titleToTranslate, selectedLanguage, '#project-title');
-                translateText(aboutToTranslate, selectedLanguage, '#project-about');
+    {% comment %} <script>
+        $(document).ready(function(){
+            $('.person-link').on('click', function(event){
+                event.preventDefault();
+                var name = $(this).data('name');
+                $.ajax({
+                    url: '/get_person_details/' + name + '/',
+                    method: 'GET',
+                    success: function(data) {
+                        console.log(data);  // Log the received data
+                        $('#popup-name').text(data.name);
+                        $('#person-popup').show();
+                        $('#tree-container').empty();  // Clear previous tree
+                        createDAG(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("Error fetching data:", error);
+                    }
+                });
+            });
+        
+            $('#close-popup').on('click', function(){
+                $('#person-popup').hide();
+                $('#tree-container').empty();  // Clear previous tree
             });
         });
         
-        function translateText(text, targetLanguage, elementSelector) {
-            const url = `https://www.apertium.org/apy/translate`;
-            const data = {
-                q: text,
-                langpair: `en|${targetLanguage}`
-            };
+        function createDAG(person) {
+            console.log(person); // Log the received person data
         
-            $.ajax({
-                url: url,
-                type: 'GET',
-                data: data,
-                success: function(response) {
-                    const translatedText = response.responseData.translatedText;
-                    $(elementSelector).text(translatedText);
-                },
-                error: function(error) {
-                    console.error('Error:', error);
+            const width = 800;
+            const height = 600;
+        
+            // Ensure that 'person.people' exists and is an array
+            if (!person.people || !Array.isArray(person.people)) {
+                console.error('Invalid data format: expected "people" array');
+                return;
+            }
+        
+            // Create a map of individuals
+            const personMap = new Map();
+            person.people.forEach(p => {
+                personMap.set(p.name, {
+                    name: p.name,
+                    children: [],
+                    parents: []
+                });
+            });
+        
+            // Establish the relationships
+            person.people.forEach(p => {
+                const personNode = personMap.get(p.name);
+                if (p.junior) {
+                    p.junior.split(',').forEach(juniorName => {
+                        const juniorNode = personMap.get(juniorName.trim());
+                        if (juniorNode) {
+                            personNode.children.push(juniorNode);
+                            juniorNode.parents.push(personNode);
+                        }
+                    });
                 }
             });
-        }
-    </script>
+        
+            // Create an array of links for the DAG
+            const links = [];
+            personMap.forEach(node => {
+                node.children.forEach(child => {
+                    links.push({ source: node, target: child });
+                });
+            });
+        
+            const simulation = d3.forceSimulation(Array.from(personMap.values()))
+                .force("link", d3.forceLink(links).id(d => d.name).distance(100))
+                .force("charge", d3.forceManyBody().strength(-300))
+                .force("center", d3.forceCenter(width / 2, height / 2));
+        
+            const svg = d3.select("#tree-container").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+        
+            const link = svg.selectAll(".link")
+                .data(links)
+                .enter().append("line")
+                .attr("class", "link");
+        
+            const node = svg.selectAll(".node")
+                .data(simulation.nodes())
+                .enter().append("g")
+                .attr("class", "node")
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+        
+            node.append("circle")
+                .attr("r", 5);
+        
+            node.append("text")
+                .attr("dy", 3)
+                .attr("x", 8)
+                .style("text-anchor", "start")
+                .text(d => d.name);
+        
+            simulation.on("tick", () => {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+        
+                node
+                    .attr("transform", d => `translate(${d.x},${d.y})`);
+            });
+        
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+        
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+        
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+        }        
+    </script> {% endcomment %}
+    <script>
+        $(document).ready(function(){
+            $('.person-link').on('click', function(event){
+                event.preventDefault();
+                var name = $(this).data('name');
+                $.ajax({
+                    url: '/get_person_details/' + name + '/',
+                    method: 'GET',
+                    success: function(data) {  // Log the received data
+                        $('#popup-name').text(data.name);
+                        $('#person-popup').show();
+                        $('#tree-container').empty();  // Clear previous tree
+                        createDAG(data);
+                    },
+                    error: function(xhr, status, error) {
+                        console.log("Error fetching data:", error);
+                    }
+                });
+            });
+        
+            $('#close-popup').on('click', function(){
+                $('#person-popup').hide();
+                $('#tree-container').empty();  // Clear previous tree
+            });
+        });
+        
+        function createDAG(person) {
+            const width = 800;
+            const height = 600;
+            const levelOffset = 100; // Offset for juniors and seniors
+        
+            // Create a map of individuals
+            const personMap = new Map();
+            personMap.set(person.name, {
+                name: person.name,
+                children: [],
+                parents: [],
+                level: 0,
+                x: width / 2,
+                y: height / 2
+            });
+        
+            const jrMap = new Map();
+            if (person.junior) {
+                const juniors = person.junior.split(',').map(juniorName => juniorName.trim());
+                const juniorSpacing = width / (juniors.length + 1);
+                juniors.forEach((juniorName, index) => {
+                    if (!jrMap.has(juniorName)) {
+                        jrMap.set(juniorName, {
+                            name: juniorName,
+                            children: [],
+                            parents: [],
+                            level: 1,
+                            x: (index + 1) * juniorSpacing,
+                            y: height / 2 + levelOffset
+                        });
+                    }
+                    const juniorNode = jrMap.get(juniorName);
+                    personMap.get(person.name).children.push(juniorNode);
+                    personMap.set(juniorName, juniorNode);
+                });
+            }
+        
+            const SrMap = new Map();
+            if (person.senior) {
+                const seniors = person.senior.split(',').map(seniorName => seniorName.trim());
+                const seniorSpacing = width / (seniors.length + 1);
+                seniors.forEach((seniorName, index) => {
+                    if (!SrMap.has(seniorName)) {
+                        SrMap.set(seniorName, {
+                            name: seniorName,
+                            children: [],
+                            parents: [],
+                            level: -1,
+                            x: (index + 1) * seniorSpacing,
+                            y: height / 2 - levelOffset
+                        });
+                    }
+                    const seniorNode = SrMap.get(seniorName);
+                    personMap.get(person.name).parents.push(seniorNode);
+                    personMap.set(seniorName, seniorNode);
+                });
+            }
+        
+            // Create an array of links for the DAG
+            const links = [];
+            personMap.forEach(node => {
+                if (node.level === 0) {
+                    node.children.forEach(child => {
+                        links.push({ source: node.name, target: child.name, type: 'junior' });
+                    });
+                    node.parents.forEach(parent => {
+                        links.push({ source: parent.name, target: node.name, type: 'senior' });
+                    });
+                }
+            });
+        
+            console.log(links);
+            console.log(person);
+            console.log(personMap);
+        
+            const nodes = Array.from(personMap.values());
+        
+            // Initialize node positions
+            nodes.forEach(node => {
+                node.fx = node.x;
+                node.fy = node.y;
+            });
+        
+            const simulation = d3.forceSimulation(nodes)
+                .force("link", d3.forceLink(links).id(d => d.name).distance(100))
+                .force("charge", d3.forceManyBody().strength(-300))
+                .force("center", d3.forceCenter(width / 2, height / 2))
+                .on("tick", ticked);
+        
+            const svg = d3.select("#tree-container").append("svg")
+                .attr("width", width)
+                .attr("height", height);
+        
+            // Define arrow markers
+            svg.append("defs").selectAll("marker")
+                .data(["junior", "senior"])
+                .enter().append("marker")
+                .attr("id", d => `arrow-${d}`)
+                .attr("viewBox", "0 -5 10 10")
+                .attr("refX", 10)
+                .attr("refY", 0)
+                .attr("markerWidth", 6)
+                .attr("markerHeight", 6)
+                .attr("orient", "auto")
+                .append("path")
+                .attr("d", "M0,-5L10,0L0,5")
+                .attr("fill", "#999");
+        
+            const link = svg.selectAll(".link")
+                .data(links)
+                .enter().append("line")
+                .attr("class", "link")
+                .attr("stroke", "#999")
+                .attr("stroke-width", "2px")
+                .attr("marker-end", d => `url(#arrow-${d.type})`);
+        
+            const node = svg.selectAll(".node")
+                .data(nodes)
+                .enter().append("g")
+                .attr("class", "node")
+                .call(d3.drag()
+                    .on("start", dragstarted)
+                    .on("drag", dragged)
+                    .on("end", dragended));
+        
+            node.append("circle")
+                .attr("r", 5)
+                .attr("fill", "#69b3a2");
+        
+            node.append("text")
+                .attr("dy", -10)
+                .attr("x", 0)
+                .style("text-anchor", "middle")
+                .text(d => d.name);
+        
+            function ticked() {
+                link
+                    .attr("x1", d => d.source.x)
+                    .attr("y1", d => d.source.y)
+                    .attr("x2", d => d.target.x)
+                    .attr("y2", d => d.target.y);
+        
+                node
+                    .attr("transform", d => `translate(${d.x},${d.y})`);
+            }
+        
+            function dragstarted(event, d) {
+                if (!event.active) simulation.alphaTarget(0.3).restart();
+                d.fx = d.x;
+                d.fy = d.y;
+            }
+        
+            function dragged(event, d) {
+                d.fx = event.x;
+                d.fy = event.y;
+            }
+        
+            function dragended(event, d) {
+                if (!event.active) simulation.alphaTarget(0);
+                d.fx = null;
+                d.fy = null;
+            }
+        }                             
+        </script>          
     {% include 'footer.html' %}
 </body>
 </html>

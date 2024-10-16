@@ -14,7 +14,7 @@ urlpatterns = [
     path("add/<int:id>",views.add),
     path("search", views.search_view, name='search'),
     # path("project/<int:id>/", views.ProjectDetailView.as_view(), name='project_detail'),
-    path("fproject/<int:id>/", views.FProjectDetailView.as_view(), name='fproject_detail'),
+    path("fproject/<int:id>/", views.fproject_detail, name='fproject_detail'),
     path("publication/<int:id>/", views.PublicationDetailView.as_view(), name='publication_detail'),
     path("country_collab", views.country_collab, name='country_collab'),
     path("world_collab", views.world_collab, name='world_collab'),
@@ -23,5 +23,8 @@ urlpatterns = [
     path('all_publications/', views.all_publications, name='all_publications'),
     path("publications", views.publications, name='publications'),
     path('fprojects/', views.get_fprojects_data, name='get_fprojects_data'),
-    path('viz_fprojects', views.viz_fprojects, name='viz_fprojects')
+    path('viz_fprojects', views.viz_fprojects, name='viz_fprojects'),
+    path('fproject_list/', views.FProjectListView.as_view(), name='fproject_list'),
+    path('publication_list/', views.PublicationListView.as_view(), name='publication_list'),
+    path('get_person_details/<str:name>/', views.get_person_details, name='get_person_details')
 ]

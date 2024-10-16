@@ -456,6 +456,50 @@
     .project-title {
         cursor: pointer;
     }
+    .btn-primary {
+        display: inline-block;
+        margin-top: 1em;
+        padding: 0.5em 1em;
+        background-color: #2980b9;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        background-color: #336699;
+    }
+    .dropdown {
+        position: relative;
+        display: inline-block;
+    }
+    
+    /* Dropdown Content (Hidden by Default) */
+    .dropdown-content {
+        display: none;
+        position: absolute;
+        background-color: #f9f9f9;
+        min-width: 160px;
+        box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+        z-index: 1;
+    }
+    
+    /* Links inside the dropdown */
+    .dropdown-content a {
+        color: black;
+        padding: 12px 16px;
+        text-decoration: none;
+        display: block;
+    }
+    
+    /* Change color of dropdown links on hover */
+    .dropdown-content a:hover {background-color: #f1f1f1}
+    
+    /* Show the dropdown menu on hover */
+    .dropdown:hover .dropdown-content {
+        display: block;
+    }
     </style>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
@@ -634,6 +678,7 @@
             </div>
             {% endfor %}
         </div>
+        <center><a href="{% url 'fproject_list' %}" class="btn-primary">View All Projects</a></center>
     </div>
     {% include 'footer.html' %}
 </body>
